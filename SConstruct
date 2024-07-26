@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import os
 import sys
 import subprocess
 
@@ -56,12 +57,15 @@ if env['target_name'] == '':
 
 # Enable Obj-C modules
 env.Append(CCFLAGS=["-fmodules", "-fcxx-modules"])
+architecture_directory = ''
 
 if env['simulator']:
+	architecture_directory = 'ios-arm64_x86_64-simulator'
 	sdk_name = 'iphonesimulator'
 	env.Append(CCFLAGS=['-mios-simulator-version-min=10.0'])
 	env.Append(LINKFLAGS=["-mios-simulator-version-min=10.0"])
 else:
+	architecture_directory = 'ios-arm64'
 	sdk_name = 'iphoneos'
 	env.Append(CCFLAGS=['-miphoneos-version-min=10.0'])
 	env.Append(LINKFLAGS=["-miphoneos-version-min=10.0"])
@@ -70,6 +74,11 @@ try:
 	sdk_path = decode_utf8(subprocess.check_output(['xcrun', '--sdk', sdk_name, '--show-sdk-path']).strip())
 except (subprocess.CalledProcessError, OSError):
 	raise ValueError("Failed to find SDK path while running xcrun --sdk {} --show-sdk-path.".format(sdk_name))
+
+
+env.Append(FRAMEWORKPATH=[f'#Pods/Google-Mobile-Ads-SDK/Frameworks/GoogleMobileAdsFramework/GoogleMobileAds.xcframework/{architecture_directory}'])
+env.Append(FRAMEWORKPATH=[f'#Pods/GoogleUserMessagingPlatform/Frameworks/Release/UserMessagingPlatform.xcframework/{architecture_directory}'])
+
 
 env.Append(CCFLAGS=[
 	'-fobjc-arc', 
@@ -92,9 +101,14 @@ env.Append(LINKFLAGS=["-arch", env['arch'], '-isysroot', sdk_path, '-F' + sdk_pa
 if env['arch'] == 'armv7':
 	env.Prepend(CXXFLAGS=['-fno-aligned-allocation'])
 
+env.Append(CCFLAGS=["$IOS_SDK_PATH"])
+env.Prepend(CXXFLAGS=['-DIOS_ENABLED'])
+env.Prepend(CXXFLAGS=['-DVERSION_4_0'])
+
+
 if env['version'] == '4.0' or env['version'] == '4.1' or env['version'] == '4.2':
 	env.Prepend(CFLAGS=['-std=gnu11'])
-	env.Prepend(CXXFLAGS=['-DVULKAN_ENABLED', '-std=gnu++17'])
+	env.Prepend(CXXFLAGS=['-std=gnu++17'])
 
 	if env['target'] == 'debug':
 		env.Prepend(CXXFLAGS=[
@@ -124,15 +138,20 @@ else:
 
 # Adding header files
 env.Append(CPPPATH=[
-	'.', 
+	f'{plugin_name}',
+	f'{plugin_name}/adformat',
+	f'{plugin_name}/model',
 	'godot',
-	'godot/platform/ios',
+	'godot/platform/ios'
 ])
 
 # tweak this if you want to use different folders, or more folders, to store your source code in.
 sources = Glob(f'{plugin_name}/*.cpp')
 sources.append(Glob(f'{plugin_name}/*.mm'))
 sources.append(Glob(f'{plugin_name}/*.m'))
+sources.append(Glob(f'{plugin_name}/**/*.cpp'))
+sources.append(Glob(f'{plugin_name}/**/*.mm'))
+sources.append(Glob(f'{plugin_name}/**/*.m'))
 
 # lib<plugin>.<arch>-<simulator|iphone>.<release|debug|release_debug>.a
 library_platform = env["arch"] + "-" + ("simulator" if env["simulator"] else "ios")

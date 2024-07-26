@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		76F63C7F93DD5B2559E2044D /* Pods_AdmobPlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B9546300E1AD87BCF20A8286 /* Pods_AdmobPlugin.framework */; };
 		90CAAA9924E71FF10013969F /* admob_plugin.mm in Sources */ = {isa = PBXBuildFile; fileRef = 90CAAA9824E71FF10013969F /* admob_plugin.mm */; };
 		90CAAAA424E724C50013969F /* admob_plugin_implementation.mm in Sources */ = {isa = PBXBuildFile; fileRef = 90CAAAA324E724C50013969F /* admob_plugin_implementation.mm */; };
 /* End PBXBuildFile section */
@@ -24,11 +25,14 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		691F31590E47F612B32B609A /* Pods-AdmobPlugin.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AdmobPlugin.release.xcconfig"; path = "Target Support Files/Pods-AdmobPlugin/Pods-AdmobPlugin.release.xcconfig"; sourceTree = "<group>"; };
 		90CAAA9424E71FF10013969F /* libadmob_plugin.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libadmob_plugin.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		90CAAA9724E71FF10013969F /* admob_plugin.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = admob_plugin.h; sourceTree = "<group>"; };
 		90CAAA9824E71FF10013969F /* admob_plugin.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = admob_plugin.mm; sourceTree = "<group>"; };
 		90CAAAA324E724C50013969F /* admob_plugin_implementation.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = admob_plugin_implementation.mm; sourceTree = "<group>"; };
 		90CAAAA524E724D00013969F /* admob_plugin_implementation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = admob_plugin_implementation.h; sourceTree = "<group>"; };
+		9D55AFBEDD1161A956405E6A /* Pods-AdmobPlugin.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AdmobPlugin.debug.xcconfig"; path = "Target Support Files/Pods-AdmobPlugin/Pods-AdmobPlugin.debug.xcconfig"; sourceTree = "<group>"; };
+		B9546300E1AD87BCF20A8286 /* Pods_AdmobPlugin.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AdmobPlugin.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -36,6 +40,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				76F63C7F93DD5B2559E2044D /* Pods_AdmobPlugin.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -48,6 +53,7 @@
 				90CAAA9624E71FF10013969F /* AdmobPlugin */,
 				90CAAA9524E71FF10013969F /* Products */,
 				90CAAAA824E72A8A0013969F /* Frameworks */,
+				EB1D3781559431A19A242FC1 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -73,8 +79,19 @@
 		90CAAAA824E72A8A0013969F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				B9546300E1AD87BCF20A8286 /* Pods_AdmobPlugin.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		EB1D3781559431A19A242FC1 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				9D55AFBEDD1161A956405E6A /* Pods-AdmobPlugin.debug.xcconfig */,
+				691F31590E47F612B32B609A /* Pods-AdmobPlugin.release.xcconfig */,
+			);
+			name = Pods;
+			path = Pods;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -84,6 +101,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 90CAAA9D24E71FF10013969F /* Build configuration list for PBXNativeTarget "AdmobPlugin" */;
 			buildPhases = (
+				A6E6A97D05CD23243D31A81C /* [CP] Check Pods Manifest.lock */,
 				90CAAA9024E71FF10013969F /* Sources */,
 				90CAAA9124E71FF10013969F /* Frameworks */,
 				90CAAA9224E71FF10013969F /* CopyFiles */,
@@ -128,6 +146,31 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		A6E6A97D05CD23243D31A81C /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-AdmobPlugin-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		90CAAA9024E71FF10013969F /* Sources */ = {
@@ -254,6 +297,7 @@
 		};
 		90CAAA9E24E71FF10013969F /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9D55AFBEDD1161A956405E6A /* Pods-AdmobPlugin.debug.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				HEADER_SEARCH_PATHS = (
@@ -293,6 +337,7 @@
 		};
 		90CAAA9F24E71FF10013969F /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 691F31590E47F612B32B609A /* Pods-AdmobPlugin.release.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				HEADER_SEARCH_PATHS = (

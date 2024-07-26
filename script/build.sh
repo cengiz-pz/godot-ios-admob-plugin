@@ -8,9 +8,11 @@ supported_godot_versions=("4.0" "4.1" "4.2")
 BUILD_TIMEOUT=40	# increase this value using -t option if device is not able to generate all headers before godot build is killed
 
 do_clean=false
+do_remove_pod_trunk=false
 do_remove_godot=false
 do_download_godot=false
 do_generate_headers=false
+do_install_pods=false
 do_build=false
 do_create_zip=false
 ignore_unsupported_godot_version=false
@@ -25,7 +27,7 @@ function display_help()
 	./script/echocolor.sh -y "If plugin version is not set with the -z option, then Godot version will be used."
 	echo
 	./script/echocolor.sh -Y "Syntax:"
-	./script/echocolor.sh -y "	$0 [-a|A <godot version>|c|g|G <godot version>|h|H|i|t <timeout>|z]"
+	./script/echocolor.sh -y "	$0 [-a|A <godot version>|c|g|G <godot version>|h|H|i|p|P|t <timeout>|z]"
 	echo
 	./script/echocolor.sh -Y "Options:"
 	./script/echocolor.sh -y "	a	generate godot headers, build plugin, and create zip archive"
@@ -39,13 +41,18 @@ function display_help()
 	./script/echocolor.sh -y "	h	display usage information"
 	./script/echocolor.sh -y "	H	generate godot headers"
 	./script/echocolor.sh -y "	i	ignore if an unsupported godot version selected and continue"
+	./script/echocolor.sh -y "	p	remove pods and pod repo trunk"
+	./script/echocolor.sh -y "	P	install pods"
 	./script/echocolor.sh -y "	t	change timeout value for godot build"
 	./script/echocolor.sh -y "	z	create zip archive"
 	echo
 	./script/echocolor.sh -Y "Examples:"
 	./script/echocolor.sh -y "	* clean existing build, remove godot, and rebuild all"
 	./script/echocolor.sh -y "	   $> $0 -cgA 4.2"
-	./script/echocolor.sh -y "	   $> $0 -cgG 4.2 -Hbz"
+	./script/echocolor.sh -y "	   $> $0 -cgpG 4.2 -HPbz"
+	echo
+	./script/echocolor.sh -y "	* clean existing build, remove pods and pod repo trunk, and rebuild plugin"
+	./script/echocolor.sh -y "	   $> $0 -cpPb"
 	echo
 	./script/echocolor.sh -y "	* clean existing build and rebuild plugin"
 	./script/echocolor.sh -y "	   $> $0 -ca"
@@ -100,7 +107,13 @@ function clean_plugin_build()
 	rm -rf ./bin/*
 	find . -name "*.d" -type f -delete
 	find . -name "*.o" -type f -delete
+}
+
+
+function remove_pod_repo_trunk()
+{
 	rm -rf ./Pods/
+	pod repo remove trunk
 }
 
 
@@ -181,6 +194,13 @@ function generate_static_library()
 }
 
 
+function install_pods()
+{
+	display_status "installing pods..."
+	pod install --repo-update || true
+}
+
+
 function build_plugin()
 {
 	if [[ ! -f "./godot/GODOT_VERSION" ]]
@@ -190,9 +210,6 @@ function build_plugin()
 	fi
 
 	GODOT_VERSION=$(cat ./godot/GODOT_VERSION)
-
-	display_status "installing pods..."
-	pod install --repo-update || true
 
 	dest_directory="./bin/release"
 	lib_directory="./bin/static_libraries"
@@ -215,9 +232,9 @@ function build_plugin()
 	# Move library
 	cp $lib_directory/$plugin_name.{release,debug}.a "$dest_directory"
 
-	config_dir="./config"
+	config_directory="./config"
 
-	cp "$config_dir"/*.gdip "$dest_directory"
+	cp "$config_directory"/*.gdip "$dest_directory"
 }
 
 
@@ -246,18 +263,41 @@ function create_zip_archive()
 		rm ./bin/release/$file_name
 	fi
 
+	tmp_directory="./bin/.tmp_zip_"
+	lib_directory="./bin/static_libraries"
+	config_directory="./config"
+
+	if [[ -d "$tmp_directory" ]]
+	then
+		display_status "removıng exıstıng staging directory $tmp_directory"
+		rm -r $tmp_directory
+	fi
+
+	mkdir -p $tmp_directory/addons/$plugin_name
+	cp -r ./addon/* $tmp_directory/addons/$plugin_name
+
+	mkdir -p $tmp_directory/ios/framework
+	find ./Pods -iname '*.xcframework' -type d -exec cp -r {} $tmp_directory/ios/framework \;
+
+	mkdir -p $tmp_directory/ios/plugins
+	cp $config_directory/*.gdip $tmp_directory/ios/plugins
+	cp $lib_directory/$plugin_name.{release,debug}.a $tmp_directory/ios/plugins
+
 	display_status "creating $file_name file..."
-	zip -r ./bin/release/$file_name ./bin/release/*
+	cd $tmp_directory; zip -yr ../release/$file_name ./*; cd -
+
+	rm -rf $tmp_directory
 }
 
 
-while getopts "aA:bcgG:hHit:z:" option; do
+while getopts "aA:bcgG:hHipPt:z:" option; do
 	case $option in
 		h)
 			display_help
 			exit;;
 		a)
 			do_generate_headers=true
+			do_install_pods=true
 			do_build=true
 			do_create_zip=true
 			;;
@@ -265,6 +305,7 @@ while getopts "aA:bcgG:hHit:z:" option; do
 			GODOT_VERSION=$OPTARG
 			do_download_godot=true
 			do_generate_headers=true
+			do_install_pods=true
 			do_build=true
 			do_create_zip=true
 			;;
@@ -286,6 +327,12 @@ while getopts "aA:bcgG:hHit:z:" option; do
 			;;
 		i)
 			ignore_unsupported_godot_version=true
+			;;
+		p)
+			do_remove_pod_trunk=true
+			;;
+		P)
+			do_install_pods=true
 			;;
 		t)
 			regex='^[0-9]+$'
@@ -333,6 +380,11 @@ then
 	clean_plugin_build
 fi
 
+if [[ "$do_remove_pod_trunk" == true ]]
+then
+	remove_pod_repo_trunk
+fi
+
 if [[ "$do_remove_godot" == true ]]
 then
 	remove_godot_directory
@@ -346,6 +398,11 @@ fi
 if [[ "$do_generate_headers" == true ]]
 then
 	generate_godot_headers
+fi
+
+if [[ "$do_install_pods" == true ]]
+then
+	install_pods
 fi
 
 if [[ "$do_build" == true ]]

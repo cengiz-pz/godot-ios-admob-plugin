@@ -1,5 +1,7 @@
 //
-//  admob_plugin.h
+// © 2024-present https://github.com/cengiz-pz
+//
+// admob_plugin.h
 //
 
 void admob_plugin_init();

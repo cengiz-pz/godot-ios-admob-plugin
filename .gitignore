@@ -31,8 +31,16 @@ DerivedData/
 *.o
 *.dblite
 
+# Godot
+*.png.import
+*.svg.import
+
 # project specific
 bin/*
 godot/
 Pods/
 Podfile.lock
+
+# Plugin-specific
+demo/addons/
+demo/ios/

@@ -1,5 +1,7 @@
 //
-//  admob_plugin.mm
+// © 2024-present https://github.com/cengiz-pz
+//
+// admob_plugin.mm
 //
 
 #import <Foundation/Foundation.h>
@@ -23,6 +25,6 @@ void admob_plugin_deinit() {
 	NSLog(@"deinit plugin");
 	
 	if (plugin) {
-	   memdelete(plugin);
-   }
+		memdelete(plugin);
+	}
 }

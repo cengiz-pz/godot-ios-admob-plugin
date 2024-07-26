@@ -1,12 +1,12 @@
 [config]
 name="AdmobPlugin"
-binary="AdmobPlugin.release.a"
+binary="AdmobPlugin.a"
 
 initialization="admob_plugin_init"
 deinitialization="admob_plugin_deinit"
 
 [dependencies]
-linked=[]
+linked=["res://ios/framework/GoogleMobileAds.xcframework","res://ios/framework/UserMessagingPlatform.xcframework"]
 embedded=[]
 system=["Foundation.framework"]
 
