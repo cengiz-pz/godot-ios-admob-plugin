@@ -123,7 +123,7 @@
 	return parameters;
 }
 
-+ (UMPDebugSettings *)godotDictionaryToUMPDebugSettings:(Dictionary) godotDictionary {
++ (UMPDebugSettings*) godotDictionaryToUMPDebugSettings:(Dictionary) godotDictionary {
 	UMPDebugSettings *debugSettings = [[UMPDebugSettings alloc] init];
 	
 	int debugGeographyValue = godotDictionary["debug_geography"];
@@ -151,11 +151,42 @@
 }
 
 + (Dictionary) nsDictionaryToGodotDictionary:(NSDictionary*) nsDictionary {
-	Dictionary dictionary;
+	Dictionary dictionary = Dictionary();
 
-	for (NSString *key in [nsDictionary allKeys]) {
-		NSString *value = [nsDictionary objectForKey:key];
-		dictionary[key.UTF8String] = (value) ? [value UTF8String] : "";
+	for (NSObject* keyObject in [nsDictionary allKeys]) {
+		if (keyObject && [keyObject isKindOfClass:[NSString class]]) {
+			NSString* key = (NSString*) keyObject;
+
+			NSObject* valueObject = [nsDictionary objectForKey:key];
+			if (valueObject) {
+				if ([valueObject isKindOfClass:[NSString class]]) {
+					NSString* value = (NSString*) valueObject;
+					dictionary[[key UTF8String]] = (value) ? [value UTF8String] : "";
+				}
+				else if ([valueObject isKindOfClass:[NSNumber class]]) {
+					NSNumber* value = (NSNumber*) valueObject;
+					if (strcmp([value objCType], @encode(BOOL)) == 0) {
+						dictionary[[key UTF8String]] = (int) [value boolValue];
+					} else if (strcmp([value objCType], @encode(char)) == 0) {
+						dictionary[[key UTF8String]] = (int) [value charValue];
+					} else if (strcmp([value objCType], @encode(int)) == 0) {
+						dictionary[[key UTF8String]] = [value intValue];
+					} else if (strcmp([value objCType], @encode(unsigned int)) == 0) {
+						dictionary[[key UTF8String]] = (int) [value unsignedIntValue];
+					} else if (strcmp([value objCType], @encode(long long)) == 0) {
+						dictionary[[key UTF8String]] = (int) [value longValue];
+					} else if (strcmp([value objCType], @encode(float)) == 0) {
+						dictionary[[key UTF8String]] = [value floatValue];
+					} else if (strcmp([value objCType], @encode(double)) == 0) {
+						dictionary[[key UTF8String]] = (float) [value doubleValue];
+					}
+				}
+				else if ([valueObject isKindOfClass:[NSDictionary class]]) {
+					NSDictionary* value = (NSDictionary*) valueObject;
+					dictionary[[key UTF8String]] = [GAPConverter nsDictionaryToGodotDictionary:value];
+				}
+			}
+		}
 	}
 
 	return dictionary;
@@ -254,7 +285,7 @@
 	Dictionary dictionary;
 	
 	dictionary = [GAPConverter nsAdErrorToGodotDictionary:nsError];
-	GADResponseInfo *responseInfo = nsError.userInfo[GADErrorUserInfoKeyResponseInfo];
+	GADResponseInfo* responseInfo = nsError.userInfo[GADErrorUserInfoKeyResponseInfo];
 	dictionary["response_info"] = (responseInfo) ? [GAPConverter responseInfoToGodotDictionary:responseInfo] : Dictionary();
 
 	return dictionary;

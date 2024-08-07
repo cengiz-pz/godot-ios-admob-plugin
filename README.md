@@ -29,14 +29,16 @@ Steps:
 	- keep `Change Install Folder` setting pointing to your project's root directory
 	- keep `Ignore asset root` checkbox checked
 	- click `Install` button
-- enable the plugin via the `Plugins` tab of `Project->Project Settings...` menu, in the Godot Editor
+- enable the addon via the `Plugins` tab of `Project->Project Settings...` menu, in the Godot Editor
+- enable the plugin via the `iOS` section of `Project->Export...` menu, in the Godot Editor
 
 ### ![](addon/icon.png?raw=true) Installing manually
 Steps:
 - download release archive from Github
 - unzip the release archive
 - copy to your Godot project's root directory
-- enable the plugin via the `Plugins` tab of `Project->Project Settings...` menu, in the Godot Editor
+- enable the addon via the `Plugins` tab of `Project->Project Settings...` menu, in the Godot Editor
+- enable the plugin via the `iOS` section of `Project->Export...` menu, in the Godot Editor
 
 ## ![](addon/icon.png?raw=true) Usage
 - Add `Admob` node to your main scene and populate the ID fields of the node
@@ -112,20 +114,6 @@ Steps:
 
 ### Missing APP ID
 If your game crashes due to missing APP ID, then make sure that you enter your Admob APP ID in the Admob node and pay attention to the [iOS Export section](#ios-export).
-
-### Plugin icon
-If you're getting the following error or any error related to the plugin's `icon.png` file:
-
-```
-Godot Engine v4.?.stable.official (c) 2007-present Juan Linietsky, Ariel Manzur & Godot Contributors.
---- Debug adapter server started ---
---- GDScript language server started on port ? ---
-  res://addons/[?]Plugin/[?]ExportPlugin.gd:21 - Parse Error: Preload file "res://addons/[?]Plugin/icon.png" has no resource loaders (unrecognized file extension).
-  res://addons/[?]Plugin/[?]ExportPlugin.gd:70 - Parse Error: Could not find type "[?]" in the current scope.
-  ...
-```
-
-then reimport the `res://addons/[?]Plugin/icon.png` file from Godot Editor's context menu.
 
 ### XCode logs
 XCode logs are one of the best tools for troubleshooting unexpected behavior. View XCode logs while running your game to troubleshoot any issues.
