@@ -166,3 +166,16 @@ ___
 ## ![](addon/icon.png?raw=true) Libraries
 
 Library archives will be created in the `bin/release` directory.
+
+<br/><br/><br/>
+
+---
+# ![](addon/icon.png?raw=true) All Plugins
+
+| Plugin | Android | iOS |
+| :---: | :--- | :--- |
+| Notification Scheduler | https://github.com/cengiz-pz/godot-android-notification-scheduler-plugin | https://github.com/cengiz-pz/godot-ios-notification-scheduler-plugin |
+| Admob | https://github.com/cengiz-pz/godot-android-admob-plugin | https://github.com/cengiz-pz/godot-ios-admob-plugin |
+| Deeplink | https://github.com/cengiz-pz/godot-android-deeplink-plugin | https://github.com/cengiz-pz/godot-ios-deeplink-plugin |
+| Share | https://github.com/cengiz-pz/godot-android-share-plugin | https://github.com/cengiz-pz/godot-ios-share-plugin |
+| In-App Review | https://github.com/cengiz-pz/godot-android-inapp-review-plugin | https://github.com/cengiz-pz/godot-ios-inapp-review-plugin |
