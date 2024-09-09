@@ -20,12 +20,12 @@ env = DefaultEnvironment()
 
 # Define our options
 opts.Add(EnumVariable('target', "Compilation target", 'debug', ['debug', 'release', "release_debug"]))
-opts.Add(EnumVariable('arch', "Compilation Architecture", '', ['', 'arm64', 'armv7', 'x86_64']))
+opts.Add(EnumVariable('arch', "Compilation Architecture", '', ['', 'arm64', 'x86_64']))
 opts.Add(BoolVariable('simulator', "Compilation platform", 'no'))
 opts.Add(BoolVariable('use_llvm', "Use the LLVM / Clang compiler", 'no'))
 opts.Add('target_name', 'Resulting file name.', '')
-opts.Add(PathVariable('target_path', 'The path where the lib is installed.', 'bin/static_libraries/'))
-opts.Add(EnumVariable('version', 'Godot version to target', '', ['', '4.0', '4.1', '4.2']))
+opts.Add(PathVariable('target_path', 'The path where the lib is installed.', 'bin/lib/'))
+opts.Add(EnumVariable('version', 'Godot version to target', '', ['', '4.1', '4.2', '4.3']))
 
 # Updates the environment with the option variables.
 opts.Update(env)
@@ -98,15 +98,12 @@ env.Prepend(CXXFLAGS=[
 ])
 env.Append(LINKFLAGS=["-arch", env['arch'], '-isysroot', sdk_path, '-F' + sdk_path])
 
-if env['arch'] == 'armv7':
-	env.Prepend(CXXFLAGS=['-fno-aligned-allocation'])
-
 env.Append(CCFLAGS=["$IOS_SDK_PATH"])
 env.Prepend(CXXFLAGS=['-DIOS_ENABLED'])
 env.Prepend(CXXFLAGS=['-DVERSION_4_0'])
 
 
-if env['version'] == '4.0' or env['version'] == '4.1' or env['version'] == '4.2':
+if env['version'] == '4.1' or env['version'] == '4.2' or env['version'] == '4.3':
 	env.Prepend(CFLAGS=['-std=gnu11'])
 	env.Prepend(CXXFLAGS=['-std=gnu++17'])
 
@@ -122,16 +119,14 @@ if env['version'] == '4.0' or env['version'] == '4.1' or env['version'] == '4.2'
 			'-DNDEBUG', '-DNS_BLOCK_ASSERTIONS=1', '-DDEBUG_ENABLED',
 		])
 
-		if env['arch'] != 'armv7':
-			env.Prepend(CXXFLAGS=['-fomit-frame-pointer'])
+		env.Prepend(CXXFLAGS=['-fomit-frame-pointer'])
 	else:
 		env.Prepend(CXXFLAGS=[
 			'-O2', '-ftree-vectorize',
 			'-DNDEBUG', '-DNS_BLOCK_ASSERTIONS=1',
 		])
 
-		if env['arch'] != 'armv7':
-			env.Prepend(CXXFLAGS=['-fomit-frame-pointer'])            
+		env.Prepend(CXXFLAGS=['-fomit-frame-pointer'])            
 else:
 	print("No valid Godot version to set flags for.")
 	quit();

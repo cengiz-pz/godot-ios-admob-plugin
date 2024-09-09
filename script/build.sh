@@ -2,10 +2,15 @@
 set -e
 trap "sleep 1; echo" EXIT
 
-plugin_name="AdmobPlugin"	# value is replaced by init.sh
+plugin_name="AdmobPlugin"
 PLUGIN_VERSION=''
-supported_godot_versions=("4.0" "4.1" "4.2")
+supported_godot_versions=("4.2" "4.3" "4.4")
 BUILD_TIMEOUT=40	# increase this value using -t option if device is not able to generate all headers before godot build is killed
+
+DEST_DIRECTORY="./bin/release"
+FRAMEWORKDIR="./bin/framework"
+LIB_DIRECTORY="./bin/lib"
+CONFIG_DIRECTORY="./config"
 
 do_clean=false
 do_remove_pod_trunk=false
@@ -30,9 +35,9 @@ function display_help()
 	./script/echocolor.sh -y "	$0 [-a|A <godot version>|c|g|G <godot version>|h|H|i|p|P|t <timeout>|z <version>]"
 	echo
 	./script/echocolor.sh -Y "Options:"
-	./script/echocolor.sh -y "	a	generate godot headers, build plugin, and create zip archive"
-	./script/echocolor.sh -y "	A	download specified godot version, generate godot headers,"
-	./script/echocolor.sh -y "	 	build plugin, and create zip archive"
+	./script/echocolor.sh -y "	a	generate godot headers and build plugin"
+	./script/echocolor.sh -y "	A	download specified godot version, generate godot headers, and"
+	./script/echocolor.sh -y "	 	build plugin"
 	./script/echocolor.sh -y "	b	build plugin"
 	./script/echocolor.sh -y "	c	remove any existing plugin build"
 	./script/echocolor.sh -y "	g	remove godot directory"
@@ -110,10 +115,14 @@ function clean_plugin_build()
 }
 
 
-function remove_pod_repo_trunk()
+function remove_pods()
 {
-	rm -rf ./Pods/
-	pod repo remove trunk
+	if [[ -d ./Pods ]]
+	then
+		rm -rf ./Pods/
+	else
+		display_warning "Warning: './Pods' directory does not exist"
+	fi
 }
 
 
@@ -174,21 +183,17 @@ function generate_static_library()
 	GODOT_VERSION=$(cat ./godot/GODOT_VERSION)
 
 	TARGET_TYPE="$1"
-	LIB_DIRECTORY="$2"
-
-	# ARM64 Device
-	scons target=$TARGET_TYPE arch=arm64 target_name=$plugin_name version=$GODOT_VERSION
-	# ARM7 Device
-	scons target=$TARGET_TYPE arch=armv7 target_name=$plugin_name version=$GODOT_VERSION
-	# x86_64 Simulator
-	scons target=$TARGET_TYPE arch=x86_64 simulator=yes target_name=$plugin_name version=$GODOT_VERSION
-
+	lib_directory="$2"
 
 	display_status "generating static libraries for $plugin_name with target type $TARGET_TYPE..."
 
+	# ARM64 Device
+	scons target=$TARGET_TYPE arch=arm64 target_name=$plugin_name version=$GODOT_VERSION
+	# x86_64 Simulator
+	scons target=$TARGET_TYPE arch=x86_64 simulator=yes target_name=$plugin_name version=$GODOT_VERSION
+
 	# Creating fat library for device and simulator
 	lipo -create "$lib_directory/lib$plugin_name.x86_64-simulator.$TARGET_TYPE.a" \
-		"$lib_directory/lib$plugin_name.armv7-ios.$TARGET_TYPE.a" \
 		"$lib_directory/lib$plugin_name.arm64-ios.$TARGET_TYPE.a" \
 		-output "$lib_directory/$plugin_name.$TARGET_TYPE.a"
 }
@@ -211,30 +216,25 @@ function build_plugin()
 
 	GODOT_VERSION=$(cat ./godot/GODOT_VERSION)
 
-	dest_directory="./bin/release"
-	lib_directory="./bin/static_libraries"
-
 	# Clear target directories
-	rm -rf "$dest_directory"
-	rm -rf "$lib_directory"
+	rm -rf "$DEST_DIRECTORY"
+	rm -rf "$LIB_DIRECTORY"
 
 	# Create target directories
-	mkdir -p "$dest_directory"
-	mkdir -p "$lib_directory"
+	mkdir -p "$DEST_DIRECTORY"
+	mkdir -p "$LIB_DIRECTORY"
 
 	display_status "building plugin library with godot version $GODOT_VERSION ..."
 
 	# Compile library
-	generate_static_library release $lib_directory
-	generate_static_library release_debug $lib_directory
-	mv $lib_directory/$plugin_name.release_debug.a $lib_directory/$plugin_name.debug.a
+	generate_static_library release $LIB_DIRECTORY
+	generate_static_library release_debug $LIB_DIRECTORY
+	mv $LIB_DIRECTORY/$plugin_name.release_debug.a $LIB_DIRECTORY/$plugin_name.debug.a
 
 	# Move library
-	cp $lib_directory/$plugin_name.{release,debug}.a "$dest_directory"
+	cp $LIB_DIRECTORY/$plugin_name.{release,debug}.a "$DEST_DIRECTORY"
 
-	config_directory="./config"
-
-	cp "$config_directory"/*.gdip "$dest_directory"
+	cp "$CONFIG_DIRECTORY"/*.gdip "$DEST_DIRECTORY"
 }
 
 
@@ -264,24 +264,28 @@ function create_zip_archive()
 	fi
 
 	tmp_directory="./bin/.tmp_zip_"
-	lib_directory="./bin/static_libraries"
-	config_directory="./config"
+	addon_directory="./addon"
 
 	if [[ -d "$tmp_directory" ]]
 	then
-		display_status "removıng exıstıng staging directory $tmp_directory"
+		display_status "removing existing staging directory $tmp_directory"
 		rm -r $tmp_directory
 	fi
 
-	mkdir -p $tmp_directory/addons/$plugin_name
-	cp -r ./addon/* $tmp_directory/addons/$plugin_name
+	if [[ -d "$addon_directory" ]]
+	then
+		mkdir -p $tmp_directory/addons/$plugin_name
+		cp -r $addon_directory/* $tmp_directory/addons/$plugin_name
+	fi
 
 	mkdir -p $tmp_directory/ios/framework
 	find ./Pods -iname '*.xcframework' -type d -exec cp -r {} $tmp_directory/ios/framework \;
 
 	mkdir -p $tmp_directory/ios/plugins
-	cp $config_directory/*.gdip $tmp_directory/ios/plugins
-	cp $lib_directory/$plugin_name.{release,debug}.a $tmp_directory/ios/plugins
+	cp $CONFIG_DIRECTORY/*.gdip $tmp_directory/ios/plugins
+	cp $LIB_DIRECTORY/$plugin_name.{release,debug}.a $tmp_directory/ios/plugins
+
+	mkdir -p $DEST_DIRECTORY
 
 	display_status "creating $file_name file..."
 	cd $tmp_directory; zip -yr ../release/$file_name ./*; cd -
@@ -299,7 +303,6 @@ while getopts "aA:bcgG:hHipPt:z:" option; do
 			do_generate_headers=true
 			do_install_pods=true
 			do_build=true
-			do_create_zip=true
 			;;
 		A)
 			GODOT_VERSION=$OPTARG
@@ -307,7 +310,6 @@ while getopts "aA:bcgG:hHipPt:z:" option; do
 			do_generate_headers=true
 			do_install_pods=true
 			do_build=true
-			do_create_zip=true
 			;;
 		b)
 			do_build=true
@@ -382,7 +384,7 @@ fi
 
 if [[ "$do_remove_pod_trunk" == true ]]
 then
-	remove_pod_repo_trunk
+	remove_pods
 fi
 
 if [[ "$do_remove_godot" == true ]]
