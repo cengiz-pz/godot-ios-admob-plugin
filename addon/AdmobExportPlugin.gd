@@ -8,7 +8,6 @@ extends EditorPlugin
 const PLUGIN_NODE_TYPE_NAME = "Admob"
 const PLUGIN_PARENT_NODE_TYPE = "Node"
 const PLUGIN_NAME: String = "AdmobPlugin"
-const PLUGIN_VERSION: String = "1.0"
 
 const SK_AD_NETWORK_ITEMS: String = """
 	<array>
