@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://Main.gd" id="1_wt50o"]
 [ext_resource type="Script" path="res://addons/AdmobPlugin/Admob.gd" id="2_4x6et"]
-[ext_resource type="Texture2D" uid="uid://kkkc3onubj3w" path="res://admob.png" id="2_qti4s"]
+[ext_resource type="Texture2D" uid="uid://bdjwuj5g73wl3" path="res://admob.png" id="2_qti4s"]
 
 [node name="Main" type="Node"]
 script = ExtResource("1_wt50o")
@@ -15,13 +15,15 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 
 [node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/CenterContainer"]
 layout_mode = 2
 theme_override_constants/separation = 20
 
 [node name="TextureRect" type="TextureRect" parent="CanvasLayer/CenterContainer/VBoxContainer"]
-custom_minimum_size = Vector2(0, 64)
+custom_minimum_size = Vector2(0, 128)
 layout_mode = 2
 texture = ExtResource("2_qti4s")
 expand_mode = 3
@@ -58,9 +60,46 @@ layout_mode = 2
 disabled = true
 text = "Show Rewarded Interstitial Ad"
 
-[node name="RichTextLabel" type="RichTextLabel" parent="CanvasLayer/CenterContainer/VBoxContainer"]
-custom_minimum_size = Vector2(280, 300)
+[node name="GeographyHBoxContainer" type="HBoxContainer" parent="CanvasLayer/CenterContainer/VBoxContainer/VBoxContainer"]
 layout_mode = 2
+
+[node name="Label" type="Label" parent="CanvasLayer/CenterContainer/VBoxContainer/VBoxContainer/GeographyHBoxContainer"]
+layout_mode = 2
+text = "Debug Geography:           "
+
+[node name="OptionButton" type="OptionButton" parent="CanvasLayer/CenterContainer/VBoxContainer/VBoxContainer/GeographyHBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+selected = 1
+item_count = 3
+popup/item_0/text = "DISABLED"
+popup/item_1/text = "EEA"
+popup/item_1/id = 1
+popup/item_2/text = "NOT EEA"
+popup/item_2/id = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/CenterContainer/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Label" type="Label" parent="CanvasLayer/CenterContainer/VBoxContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "Consent Info:          "
+
+[node name="UpdateConsentInfoButton" type="Button" parent="CanvasLayer/CenterContainer/VBoxContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Update"
+
+[node name="ResetConsentButton" type="Button" parent="CanvasLayer/CenterContainer/VBoxContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Reset"
+
+[node name="RichTextLabel" type="RichTextLabel" parent="CanvasLayer/CenterContainer/VBoxContainer"]
+custom_minimum_size = Vector2(380, 300)
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 14
 scroll_following = true
 
 [node name="Admob" type="Node" parent="."]
@@ -77,9 +116,16 @@ debug_rewarded_interstitial_id = "ca-app-pub-3940256099942544/5354046379"
 [connection signal="pressed" from="CanvasLayer/CenterContainer/VBoxContainer/VBoxContainer/InterstitialButton" to="." method="_on_interstitial_button_pressed"]
 [connection signal="pressed" from="CanvasLayer/CenterContainer/VBoxContainer/VBoxContainer/RewardedButton" to="." method="_on_rewarded_video_button_pressed"]
 [connection signal="pressed" from="CanvasLayer/CenterContainer/VBoxContainer/VBoxContainer/RewardedInterstitialButton" to="." method="_on_rewarded_interstitial_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/CenterContainer/VBoxContainer/VBoxContainer/HBoxContainer/UpdateConsentInfoButton" to="." method="_on_update_consent_info_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/CenterContainer/VBoxContainer/VBoxContainer/HBoxContainer/ResetConsentButton" to="." method="_on_reset_consent_button_pressed"]
 [connection signal="banner_ad_failed_to_load" from="Admob" to="." method="_on_admob_banner_ad_failed_to_load"]
 [connection signal="banner_ad_loaded" from="Admob" to="." method="_on_admob_banner_ad_loaded"]
 [connection signal="banner_ad_refreshed" from="Admob" to="." method="_on_admob_banner_ad_refreshed"]
+[connection signal="consent_form_dismissed" from="Admob" to="." method="_on_admob_consent_form_dismissed"]
+[connection signal="consent_form_failed_to_load" from="Admob" to="." method="_on_admob_consent_form_failed_to_load"]
+[connection signal="consent_form_loaded" from="Admob" to="." method="_on_admob_consent_form_loaded"]
+[connection signal="consent_info_update_failed" from="Admob" to="." method="_on_admob_consent_info_update_failed"]
+[connection signal="consent_info_updated" from="Admob" to="." method="_on_admob_consent_info_updated"]
 [connection signal="initialization_completed" from="Admob" to="." method="_on_admob_initialization_completed"]
 [connection signal="interstitial_ad_failed_to_load" from="Admob" to="." method="_on_admob_interstitial_ad_failed_to_load"]
 [connection signal="interstitial_ad_loaded" from="Admob" to="." method="_on_admob_interstitial_ad_loaded"]
