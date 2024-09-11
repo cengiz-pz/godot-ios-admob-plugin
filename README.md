@@ -56,6 +56,7 @@ Steps:
 	- `banner_ad_closed(ad_id: String)`
 	- `interstitial_ad_loaded(ad_id: String)`
 	- `interstitial_ad_failed_to_load(ad_id: String, error_data: LoadAdError)`
+	- `interstitial_ad_refreshed(ad_id: String)`
 	- `interstitial_ad_impression(ad_id: String)`
 	- `interstitial_ad_clicked(ad_id: String)`
 	- `interstitial_ad_showed_full_screen_content(ad_id: String)`
