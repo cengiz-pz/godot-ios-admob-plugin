@@ -11,6 +11,7 @@
 @interface InterstitialAd : AdFormatBase <GADFullScreenContentDelegate>
 
 @property(nonatomic, strong) GADInterstitialAd *interstitial;
+@property (nonatomic) BOOL isLoaded;
 
 - (instancetype) initWithID:(NSString*) adId;
 - (void) load:(LoadAdRequest*) loadAdRequest;

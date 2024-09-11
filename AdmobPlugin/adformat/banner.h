@@ -8,23 +8,13 @@
 #import "ad_format_base.h"
 #import "load_ad_request.h"
 
+#import "ad_position.h"
 
-typedef NS_ENUM(NSUInteger, AdPosition) {
-	AdPositionTop,
-	AdPositionBottom,
-	AdPositionLeft,
-	AdPositionRight,
-	AdPositionTopLeft,
-	AdPositionTopRight,
-	AdPositionBottomLeft,
-	AdPositionBottomRight,
-	AdPositionCenter,
-	AdPositionCustom = 999
-};
 
 @interface BannerAd : AdFormatBase <GADBannerViewDelegate>
 
 @property (nonatomic, strong) GADBannerView* bannerView;
+@property (nonatomic, strong) NSString* adUnitId;
 @property (nonatomic) GADAdSize adSize;
 @property (nonatomic) AdPosition adPosition;
 @property (nonatomic) BOOL isLoaded;

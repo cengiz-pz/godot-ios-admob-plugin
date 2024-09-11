@@ -18,6 +18,7 @@ const String BANNER_AD_OPENED_SIGNAL = "banner_ad_opened";
 const String BANNER_AD_CLOSED_SIGNAL = "banner_ad_closed";
 const String INTERSTITIAL_AD_LOADED_SIGNAL = "interstitial_ad_loaded";
 const String INTERSTITIAL_AD_FAILED_TO_LOAD_SIGNAL = "interstitial_ad_failed_to_load";
+const String INTERSTITIAL_AD_REFRESHED_SIGNAL = "interstitial_ad_refreshed";
 const String INTERSTITIAL_AD_IMPRESSION_SIGNAL = "interstitial_ad_impression";
 const String INTERSTITIAL_AD_CLICKED_SIGNAL = "interstitial_ad_clicked";
 const String INTERSTITIAL_AD_SHOWED_FULL_SCREEN_CONTENT_SIGNAL = "interstitial_ad_showed_full_screen_content";
@@ -84,6 +85,7 @@ void AdmobPlugin::_bind_methods() {
 
 	ADD_SIGNAL(MethodInfo(INTERSTITIAL_AD_LOADED_SIGNAL, PropertyInfo(Variant::STRING, "ad_id")));
 	ADD_SIGNAL(MethodInfo(INTERSTITIAL_AD_FAILED_TO_LOAD_SIGNAL, PropertyInfo(Variant::STRING, "ad_id"), PropertyInfo(Variant::DICTIONARY, "load_error_data")));
+	ADD_SIGNAL(MethodInfo(INTERSTITIAL_AD_REFRESHED_SIGNAL, PropertyInfo(Variant::STRING, "ad_id")));
 	ADD_SIGNAL(MethodInfo(INTERSTITIAL_AD_IMPRESSION_SIGNAL, PropertyInfo(Variant::STRING, "ad_id")));
 	ADD_SIGNAL(MethodInfo(INTERSTITIAL_AD_CLICKED_SIGNAL, PropertyInfo(Variant::STRING, "ad_id")));
 	ADD_SIGNAL(MethodInfo(INTERSTITIAL_AD_SHOWED_FULL_SCREEN_CONTENT_SIGNAL, PropertyInfo(Variant::STRING, "ad_id")));
@@ -509,9 +511,9 @@ int AdmobPlugin::get_consent_status() {
 	switch (status) {
 		case UMPConsentStatusUnknown:
 			return 0;
-		case UMPConsentStatusNotRequired:
-			return 1;
 		case UMPConsentStatusRequired:
+			return 1;
+		case UMPConsentStatusNotRequired:
 			return 2;
 		case UMPConsentStatusObtained:
 			return 3;

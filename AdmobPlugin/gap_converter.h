@@ -10,6 +10,8 @@
 #include "core/object/class_db.h"
 #include <UserMessagingPlatform/UMPRequestParameters.h>
 
+#import "ad_position.h"
+
 
 @import GoogleMobileAds;
 
@@ -23,6 +25,7 @@
 + (NSDictionary*) toNsDictionary:(Dictionary) godotDictionary;
 + (NSArray*) toNsStringArray:(Array) arr;
 + (GADPublisherPrivacyPersonalizationState) intToPublisherPrivacyPersonalizationState:(Variant) intValue;
++ (AdPosition) nsStringToAdPosition:(NSString*) nsString;
 + (GADAdSize) nsStringToAdSize:(NSString*) nsString;
 + (GADServerSideVerificationOptions*) godotDictionaryToServerSideVerificationOptions:(Dictionary) godotDictionary;
 + (UMPRequestParameters*) godotDictionaryToUMPRequestParameters:(Dictionary) godotDictionary;
@@ -42,6 +45,10 @@
 + (Dictionary) nsAdErrorToGodotDictionary:(NSError*) nsError;
 + (Dictionary) nsLoadErrorToGodotDictionary:(NSError*) nsError;
 + (Dictionary) nsFormErrorToGodotDictionary:(NSError*) nsError;
+
+
+// Util
++ (NSString *) getAdmobDeviceID;
 
 @end
 

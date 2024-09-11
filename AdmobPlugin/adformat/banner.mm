@@ -18,40 +18,11 @@
 }
 
 - (void) load:(LoadAdRequest*) loadAdRequest {
-	// set ad position
-	if ([loadAdRequest.adSize isEqualToString:@"TOP"]) {
-		self.adPosition = AdPositionTop;
-	} else if ([loadAdRequest.adSize isEqualToString:@"BOTTOM"]) {
-		self.adPosition = AdPositionBottom;
-	} else if ([loadAdRequest.adSize isEqualToString:@"LEFT"]) {
-		self.adPosition = AdPositionLeft;
-	} else if ([loadAdRequest.adSize isEqualToString:@"RIGHT"]) {
-		self.adPosition = AdPositionLeft;
-	} else if ([loadAdRequest.adSize isEqualToString:@"TOP_LEFT"]) {
-		self.adPosition = AdPositionTopLeft;
-	} else if ([loadAdRequest.adSize isEqualToString:@"TOP_RIGHT"]) {
-		self.adPosition = AdPositionTopRight;
-	} else if ([loadAdRequest.adSize isEqualToString:@"BOTTOM_LEFT"]) {
-		self.adPosition = AdPositionBottomLeft;
-	} else if ([loadAdRequest.adSize isEqualToString:@"BOTTOM_RIGHT"]) {
-		self.adPosition = AdPositionBottomRight;
-	} else if ([loadAdRequest.adSize isEqualToString:@"CENTER"]) {
-		self.adPosition = AdPositionCenter;
-	} else if ([loadAdRequest.adSize isEqualToString:@"CUSTOM"]) {
-		self.adPosition = AdPositionCustom;
-	} else {
-		NSLog(@"AdmobPlugin banner load: ERROR: invalid ad position '%@'", loadAdRequest.adSize);
-	}
-
+	self.adPosition = [GAPConverter nsStringToAdPosition: loadAdRequest.adPosition];
 	self.adSize = [GAPConverter nsStringToAdSize: loadAdRequest.adSize];
+	self.adUnitId = loadAdRequest.adUnitId;
 	
-	self.bannerView = [[GADBannerView alloc] initWithAdSize:self.adSize];
-	[self.bannerView setHidden:YES];
-	[self addBanner:self.bannerView];
-
-	self.bannerView.adUnitID = loadAdRequest.adUnitId;
-	self.bannerView.rootViewController = self;
-	self.bannerView.delegate = self;
+	[self addBanner];
 
 	GADRequest* gadRequest = [GADRequest request];
 	gadRequest.requestAgent = loadAdRequest.requestAgent;
@@ -92,9 +63,14 @@
 	return (int)(self.bannerView.bounds.size.height * scale);
 }
 
-- (void) addBanner:(GADBannerView *) bannerView {
-	bannerView.translatesAutoresizingMaskIntoConstraints = NO;
-	[AppDelegate.viewController.view addSubview:bannerView];
+- (void) addBanner {
+	self.bannerView = [[GADBannerView alloc] initWithAdSize:self.adSize];
+	self.bannerView.adUnitID = self.adUnitId;
+	self.bannerView.delegate = self;
+	self.bannerView.rootViewController = self;
+	[self.bannerView setHidden:YES];
+	self.bannerView.translatesAutoresizingMaskIntoConstraints = NO;
+	[AppDelegate.viewController.view addSubview:self.bannerView];
 	[self updateBannerPosition:static_cast<AdPosition>(self.adPosition)];	// Center on screen
 }
 
@@ -176,7 +152,7 @@
 
 - (void) bannerViewDidReceiveAd:(GADBannerView*) bannerView {
 	NSLog(@"BannerAd bannerViewDidReceiveAd %@", self.adId);
-	if (self.isLoaded){
+	if (self.isLoaded) {
 		AdmobPlugin::get_singleton()->emit_signal(BANNER_AD_REFRESHED_SIGNAL, [GAPConverter nsStringToGodotString:self.adId]);
 	}
 	else {
