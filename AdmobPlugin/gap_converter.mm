@@ -4,6 +4,10 @@
 
 #import "gap_converter.h"
 
+#import <AdSupport/ASIdentifierManager.h>
+
+#include <CommonCrypto/CommonDigest.h>
+
 
 @implementation GAPConverter
 
@@ -61,6 +65,37 @@
 			state = GADPublisherPrivacyPersonalizationStateDefault;
 	}
 	return state;
+}
+
++ (AdPosition) nsStringToAdPosition:(NSString*) nsString {
+	AdPosition adPosition;
+
+	if ([nsString isEqualToString:@"TOP"]) {
+		adPosition = AdPositionTop;
+	} else if ([nsString isEqualToString:@"BOTTOM"]) {
+		adPosition = AdPositionBottom;
+	} else if ([nsString isEqualToString:@"LEFT"]) {
+		adPosition = AdPositionLeft;
+	} else if ([nsString isEqualToString:@"RIGHT"]) {
+		adPosition = AdPositionLeft;
+	} else if ([nsString isEqualToString:@"TOP_LEFT"]) {
+		adPosition = AdPositionTopLeft;
+	} else if ([nsString isEqualToString:@"TOP_RIGHT"]) {
+		adPosition = AdPositionTopRight;
+	} else if ([nsString isEqualToString:@"BOTTOM_LEFT"]) {
+		adPosition = AdPositionBottomLeft;
+	} else if ([nsString isEqualToString:@"BOTTOM_RIGHT"]) {
+		adPosition = AdPositionBottomRight;
+	} else if ([nsString isEqualToString:@"CENTER"]) {
+		adPosition = AdPositionCenter;
+	} else if ([nsString isEqualToString:@"CUSTOM"]) {
+		adPosition = AdPositionCustom;
+	} else {
+		NSLog(@"AdmobPlugin banner load: ERROR: invalid ad position '%@'", nsString);
+		adPosition = AdPositionTop;
+	}
+
+	return adPosition;
 }
 
 + (GADAdSize) nsStringToAdSize:(NSString*) nsString {
@@ -137,6 +172,8 @@
 		String item = testDeviceIds[i];
 		[convertedArray addObject:[NSString stringWithUTF8String:item.utf8().get_data()]];
 	}
+
+	[convertedArray addObject:[GAPConverter getAdmobDeviceID]];
 	
 	debugSettings.testDeviceIdentifiers = convertedArray;
 
@@ -298,6 +335,23 @@
 	dictionary["message"] = [nsError.localizedDescription UTF8String];
 
 	return dictionary;
+}
+
+
+// UTIL
+
++ (NSString*) getAdmobDeviceID {
+    NSUUID* adid = [[ASIdentifierManager sharedManager] advertisingIdentifier];
+    const char *cStr = [adid.UUIDString UTF8String];
+    unsigned char digest[16];
+    CC_MD5(cStr, strlen(cStr), digest);
+
+    NSMutableString *output = [NSMutableString stringWithCapacity:CC_MD5_DIGEST_LENGTH * 2];
+
+    for (int i = 0; i < CC_MD5_DIGEST_LENGTH; i++)
+        [output appendFormat:@"%02x", digest[i]];
+
+    return  output;
 }
 
 @end

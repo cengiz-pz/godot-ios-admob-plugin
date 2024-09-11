@@ -13,6 +13,7 @@
 - (instancetype) initWithID:(NSString*) adId {
 	if ((self = [super init])) {
 		self.adId = adId;
+		self.isLoaded = NO;
 	}
 	return self;
 }
@@ -31,9 +32,16 @@
 		else {
 			self.interstitial = ad;
 			self.interstitial.fullScreenContentDelegate = self;
-		
-			NSLog(@"InterstitialAd %@ loaded successfully", self.adId);
-			AdmobPlugin::get_singleton()->emit_signal(INTERSTITIAL_AD_LOADED_SIGNAL, [GAPConverter nsStringToGodotString:self.adId]);
+
+			if (self.isLoaded) {
+				NSLog(@"InterstitialAd %@ refreshed", self.adId);
+				AdmobPlugin::get_singleton()->emit_signal(INTERSTITIAL_AD_REFRESHED_SIGNAL, [GAPConverter nsStringToGodotString:self.adId]);
+			}
+			else {
+				self.isLoaded = YES;
+				NSLog(@"InterstitialAd %@ loaded successfully", self.adId);
+				AdmobPlugin::get_singleton()->emit_signal(INTERSTITIAL_AD_LOADED_SIGNAL, [GAPConverter nsStringToGodotString:self.adId]);
+			}
 		}
 	}];
 }

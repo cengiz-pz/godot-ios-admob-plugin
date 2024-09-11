@@ -16,6 +16,7 @@ signal banner_ad_opened(ad_id: String)
 signal banner_ad_closed(ad_id: String)
 signal interstitial_ad_loaded(ad_id: String)
 signal interstitial_ad_failed_to_load(ad_id: String, error_data: LoadAdError)
+signal interstitial_ad_refreshed(ad_id: String)
 signal interstitial_ad_impression(ad_id: String)
 signal interstitial_ad_clicked(ad_id: String)
 signal interstitial_ad_showed_full_screen_content(ad_id: String)
@@ -128,6 +129,7 @@ func _connect_signals() -> void:
 	_plugin_singleton.connect("banner_ad_closed", _on_banner_ad_closed)
 	_plugin_singleton.connect("interstitial_ad_loaded", _on_interstitial_ad_loaded)
 	_plugin_singleton.connect("interstitial_ad_failed_to_load", _on_interstitial_ad_failed_to_load)
+	_plugin_singleton.connect("interstitial_ad_refreshed", _on_interstitial_ad_refreshed)
 	_plugin_singleton.connect("interstitial_ad_impression", _on_interstitial_ad_impression)
 	_plugin_singleton.connect("interstitial_ad_clicked", _on_interstitial_ad_clicked)
 	_plugin_singleton.connect("interstitial_ad_showed_full_screen_content", _on_interstitial_ad_showed_full_screen_content)
@@ -260,42 +262,44 @@ func show_banner_ad(a_ad_id: String = "") -> void:
 			else:
 				_plugin_singleton.show_banner_ad(_active_banner_ads[0])	# show last ad to load
 		else:
-			_plugin_singleton.show_banner_ad(a_ad_id)
+			if _active_banner_ads.has(a_ad_id):
+				_plugin_singleton.show_banner_ad(a_ad_id)
+			else:
+				printerr("Cannot show banner. Ad with ID '%s' not found." % a_ad_id)
 
 
-func hide_banner_ad(a_ad_id: String) -> void:
+func hide_banner_ad(a_ad_id: String = "") -> void:
 	if _plugin_singleton == null:
 		printerr("%s plugin not initialized" % PLUGIN_SINGLETON_NAME)
 	else:
-		if _active_banner_ads.has(a_ad_id):
-			_plugin_singleton.hide_banner_ad(a_ad_id)
+		if a_ad_id.is_empty():
+			if _active_banner_ads.is_empty():
+				printerr("Cannot hide banner ad. No banner ads loaded.")
+			else:
+				_plugin_singleton.hide_banner_ad(_active_banner_ads[0])	# hide last ad to load
 		else:
-			printerr("Cannot hide banner. Ad with ID '%s' not found." % a_ad_id)
+			if _active_banner_ads.has(a_ad_id):
+				_plugin_singleton.hide_banner_ad(a_ad_id)
+			else:
+				printerr("Cannot hide banner. Ad with ID '%s' not found." % a_ad_id)
 
 
-func remove_banner_ad(a_ad_id: String) -> void:
+func remove_banner_ad(a_ad_id: String = "") -> void:
 	if _plugin_singleton == null:
 		printerr("%s plugin not initialized" % PLUGIN_SINGLETON_NAME)
 	else:
-		if _active_banner_ads.has(a_ad_id):
-			_active_banner_ads.erase(a_ad_id)
-			_plugin_singleton.remove_banner_ad(a_ad_id)
+		if a_ad_id.is_empty():
+			if _active_banner_ads.is_empty():
+				printerr("Cannot remove banner ad. No banner ads loaded.")
+			else:
+				_plugin_singleton.remove_banner_ad(_active_banner_ads[0])	# remove last ad to load
+				_active_banner_ads.remove_at(0)
 		else:
-			printerr("Cannot remove banner ad. Ad with ID '%s' not found." % a_ad_id)
-
-
-func move_banner_ad(a_ad_id: String, a_on_top: bool) -> void:
-	if _plugin_singleton != null:
-		_plugin_singleton.move_banner_ad(a_ad_id, a_on_top)
-	else:
-		printerr("%s plugin not initialized" % PLUGIN_SINGLETON_NAME)
-
-
-func resize_banner_ad(a_ad_id: String) -> void:
-	if _plugin_singleton != null:
-		_plugin_singleton.resize_banner_ad()
-	else:
-		printerr("%s plugin not initialized" % PLUGIN_SINGLETON_NAME)
+			if _active_banner_ads.has(a_ad_id):
+				_active_banner_ads.erase(a_ad_id)
+				_plugin_singleton.remove_banner_ad(a_ad_id)
+			else:
+				printerr("Cannot remove banner ad. Ad with ID '%s' not found." % a_ad_id)
 
 
 func get_banner_dimension(a_ad_id: String = "") -> Vector2:
@@ -468,7 +472,7 @@ func show_consent_form() -> void:
 	if _plugin_singleton == null:
 		printerr("%s plugin not initialized" % PLUGIN_SINGLETON_NAME)
 	else:
-		_plugin_singleton.load_consent_form()
+		_plugin_singleton.show_consent_form()
 
 
 func get_consent_status() -> int:
@@ -487,11 +491,12 @@ func is_consent_form_available() -> bool:
 	return false
 
 
-func update_consent_info(consentRequestParameters: Dictionary) -> void:
+func update_consent_info(consentRequestParameters: ConsentRequestParameters) -> void:
 	if _plugin_singleton == null:
 		printerr("%s plugin not initialized" % PLUGIN_SINGLETON_NAME)
 	else:
-		_plugin_singleton.update_consent_info()
+		consentRequestParameters.set_is_real(is_real)
+		_plugin_singleton.update_consent_info(consentRequestParameters.get_raw_data())
 
 
 func reset_consent_info() -> void:
@@ -552,6 +557,10 @@ func _on_interstitial_ad_loaded(a_ad_id: String) -> void:
 
 func _on_interstitial_ad_failed_to_load(a_ad_id: String, error_data: Dictionary) -> void:
 	interstitial_ad_failed_to_load.emit(a_ad_id, LoadAdError.new(error_data))
+
+
+func _on_interstitial_ad_refreshed(a_ad_id: String) -> void:
+	interstitial_ad_refreshed.emit(a_ad_id)
 
 
 func _on_interstitial_ad_impression(a_ad_id: String) -> void:
