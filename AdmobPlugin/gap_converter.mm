@@ -354,4 +354,17 @@
     return  output;
 }
 
++ (NSString *) convertTrackingStatusToString:(ATTrackingManagerAuthorizationStatus) status API_AVAILABLE(ios(14)) {
+    switch (status) {
+        case ATTrackingManagerAuthorizationStatusDenied:
+            return @"denied";
+        case ATTrackingManagerAuthorizationStatusAuthorized:
+            return @"authorized";
+        case ATTrackingManagerAuthorizationStatusRestricted:
+            return @"restricted";
+        case ATTrackingManagerAuthorizationStatusNotDetermined:
+            return @"not-determined";
+    }
+}
+
 @end

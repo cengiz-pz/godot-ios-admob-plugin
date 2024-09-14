@@ -53,6 +53,8 @@ extern const String CONSENT_FORM_FAILED_TO_LOAD_SIGNAL;
 extern const String CONSENT_FORM_DISMISSED_SIGNAL;
 extern const String CONSENT_INFO_UPDATED_SIGNAL;
 extern const String CONSENT_INFO_UPDATE_FAILED_SIGNAL;
+extern const String TRACKING_AUTHORIZATION_GRANTED;
+extern const String TRACKING_AUTHORIZATION_DENIED;
 
 
 class AdmobPlugin : public Object {
@@ -116,6 +118,10 @@ public:
 	bool is_consent_form_available();
 	void update_consent_info(Dictionary consentRequestParameters);
 	void reset_consent_info();
+
+	void request_tracking_authorization();
+
+	void open_app_settings();
 
 	static AdmobPlugin* get_singleton();
 

@@ -40,6 +40,15 @@ Steps:
 - enable the addon via the `Plugins` tab of `Project->Project Settings...` menu, in the Godot Editor
 - enable the plugin via the `iOS` section of `Project->Export...` menu, in the Godot Editor
 
+## ![](addon/icon.png?raw=true) App Tracking Transparency
+App Tracking Transparency, or ATT for short, is Apple's opt-in privacy framework that requires all iOS apps to ask users for permission to share their data. This is done in the form of a popup where users can either consent or deny tracking.
+
+* To enable ATT in your app
+	- Enter a descriptive text that will be displayed on the ATT dialog in your `Admob` node's `att_text`field.
+	- Call `Admob` node's `request_tracking_authorization()` method.
+	- Handle `Admob` node's `tracking_authorization_granted` and `tracking_authorization_denied` signals.
+* If the user initially rejects the tracking request, then later on you can check if the user changed their mind and allow them to change their decision by opening the system app settings using the `Admob` node's `open_app_settings()` method.
+
 ## ![](addon/icon.png?raw=true) Usage
 - Add `Admob` node to your main scene and populate the ID fields of the node
 	- Debug IDs will only be used when your Godot app is run in debug mode
@@ -83,6 +92,8 @@ Steps:
 	- `consent_form_failed_to_load(error_data: FormError)`
 	- `consent_info_updated`
 	- `consent_info_update_failed(error_data: FormError)`
+	- `tracking_authorization_granted`
+	- `tracking_authorization_denied`
 - initialize the plugin
 	- call the `initialize()` method of the `Admob` node
 	- wait for the `initialization_completed` signal
@@ -128,6 +139,8 @@ Refer to Godot's [Troubleshooting Guide](https://docs.godotengine.org/en/stable/
 ---
 # ![](addon/icon.png?raw=true) Credits
 Developed by [Cengiz](https://github.com/cengiz-pz)
+
+Based on [Godot iOS Plugin Template](https://github.com/cengiz-pz/godot-ios-plugin-template)
 
 Original repository: [Godot iOS Admob Plugin](https://github.com/cengiz-pz/godot-ios-admob-plugin)
 

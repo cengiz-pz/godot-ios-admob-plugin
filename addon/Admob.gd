@@ -43,6 +43,8 @@ signal consent_form_dismissed(error_data: FormError)
 signal consent_form_failed_to_load(error_data: FormError)
 signal consent_info_updated
 signal consent_info_update_failed(error_data: FormError)
+signal tracking_authorization_granted
+signal tracking_authorization_denied
 
 const PLUGIN_SINGLETON_NAME: String = "AdmobPlugin"
 
@@ -54,6 +56,9 @@ const PLUGIN_SINGLETON_NAME: String = "AdmobPlugin"
 @export var first_party_id_enabled: bool = true: set = set_first_party_id_enabled
 @export var personalization_state: AdmobConfig.PersonalizationState = AdmobConfig.PersonalizationState.DEFAULT: set = set_personalization_state
 @export var request_agent: String = PLUGIN_SINGLETON_NAME: set = set_request_agent
+
+@export_group("App Tracking Transparency")
+@export_multiline var att_text: String = "": set = set_att_text
 
 @export_category("Banner")
 @export var banner_position: LoadAdRequest.AdPosition = LoadAdRequest.AdPosition.TOP: set = set_banner_position
@@ -156,6 +161,8 @@ func _connect_signals() -> void:
 	_plugin_singleton.connect("consent_form_failed_to_load", _on_consent_form_failed_to_load)
 	_plugin_singleton.connect("consent_info_updated", _on_consent_info_updated)
 	_plugin_singleton.connect("consent_info_update_failed", _on_consent_info_update_failed)
+	_plugin_singleton.connect("tracking_authorization_granted", _on_tracking_authorization_granted)
+	_plugin_singleton.connect("tracking_authorization_denied", _on_tracking_authorization_denied)
 
 
 func initialize() -> void:
@@ -191,6 +198,10 @@ func set_personalization_state(a_value: AdmobConfig.PersonalizationState) -> voi
 
 func set_request_agent(a_value: String) -> void:
 	request_agent = a_value
+
+
+func set_att_text(a_value: String) -> void:
+	att_text = a_value
 
 
 func set_banner_position(a_value: LoadAdRequest.AdPosition) -> void:
@@ -506,6 +517,20 @@ func reset_consent_info() -> void:
 		_plugin_singleton.reset_consent_info()
 
 
+func request_tracking_authorization() -> void:
+	if _plugin_singleton == null:
+		printerr("%s plugin not initialized" % PLUGIN_SINGLETON_NAME)
+	else:
+		_plugin_singleton.request_tracking_authorization()
+
+
+func open_app_settings() -> void:
+	if _plugin_singleton == null:
+		printerr("%s plugin not initialized" % PLUGIN_SINGLETON_NAME)
+	else:
+		_plugin_singleton.open_app_settings()
+
+
 func _on_initialization_completed(status_data: Dictionary) -> void:
 	configure_ads()
 	initialization_completed.emit(InitializationStatus.new(status_data))
@@ -680,3 +705,11 @@ func _on_consent_info_updated() -> void:
 
 func _on_consent_info_update_failed(error_data: Dictionary) -> void:
 	consent_info_update_failed.emit(FormError.new(error_data))
+
+
+func _on_tracking_authorization_granted() -> void:
+	tracking_authorization_granted.emit()
+
+
+func _on_tracking_authorization_denied() -> void:
+	tracking_authorization_denied.emit()

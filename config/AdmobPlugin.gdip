@@ -8,7 +8,7 @@ deinitialization="admob_plugin_deinit"
 [dependencies]
 linked=["res://ios/framework/GoogleMobileAds.xcframework","res://ios/framework/UserMessagingPlatform.xcframework"]
 embedded=[]
-system=["Foundation.framework"]
+system=["Foundation.framework","AppTrackingTransparency.framework"]
 
 capabilities=[]
 

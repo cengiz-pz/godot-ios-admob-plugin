@@ -245,6 +245,11 @@ class IosExportPlugin extends EditorExportPlugin:
 		var __admob_node: Admob = _get_admob_node(EditorInterface.get_edited_scene_root())
 		add_ios_plist_content("<key>GADApplicationIdentifier</key>")
 		add_ios_plist_content("\t<string>%s</string>" % (__admob_node.real_application_id if __admob_node.is_real else __admob_node.debug_application_id))
+
+		if __admob_node.att_text and not __admob_node.att_text.is_empty():
+			add_ios_plist_content("<key>NSUserTrackingUsageDescription</key>")
+			add_ios_plist_content("<string>%s</string>" % __admob_node.att_text)
+
 		add_ios_plist_content("\t<key>SKAdNetworkItems</key>")
 		add_ios_plist_content("%s" % SK_AD_NETWORK_ITEMS)
 

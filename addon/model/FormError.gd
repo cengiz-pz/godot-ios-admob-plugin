@@ -16,8 +16,8 @@ func _init(a_data: Dictionary):
 
 
 func get_code() -> int:
-	return _data[CODE_PROPERTY]
+	return _data[CODE_PROPERTY] if _data.has(CODE_PROPERTY) else -1
 
 
 func get_message() -> String:
-	return _data[MESSAGE_PROPERTY]
+	return _data[MESSAGE_PROPERTY] if _data.has(MESSAGE_PROPERTY) else ""

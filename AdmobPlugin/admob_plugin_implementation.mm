@@ -4,6 +4,9 @@
 
 #import "admob_plugin_implementation.h"
 
+#import <AppTrackingTransparency/AppTrackingTransparency.h>
+#import <AdSupport/AdSupport.h>
+
 #import "gap_converter.h"
 #import "admob_config.h"
 
@@ -45,6 +48,8 @@ const String CONSENT_FORM_FAILED_TO_LOAD_SIGNAL = "consent_form_failed_to_load";
 const String CONSENT_FORM_DISMISSED_SIGNAL = "consent_form_dismissed";
 const String CONSENT_INFO_UPDATED_SIGNAL = "consent_info_updated";
 const String CONSENT_INFO_UPDATE_FAILED_SIGNAL = "consent_info_update_failed";
+const String TRACKING_AUTHORIZATION_GRANTED = "tracking_authorization_granted";
+const String TRACKING_AUTHORIZATION_DENIED = "tracking_authorization_denied";
 
 static const int FULL_WIDTH = -1;
 
@@ -132,6 +137,13 @@ void AdmobPlugin::_bind_methods() {
 
 	ADD_SIGNAL(MethodInfo(CONSENT_INFO_UPDATED_SIGNAL));
 	ADD_SIGNAL(MethodInfo(CONSENT_INFO_UPDATE_FAILED_SIGNAL, PropertyInfo(Variant::DICTIONARY, "form_error_data")));
+
+	ClassDB::bind_method(D_METHOD("request_tracking_authorization"), &AdmobPlugin::request_tracking_authorization);
+
+	ADD_SIGNAL(MethodInfo(TRACKING_AUTHORIZATION_GRANTED));
+	ADD_SIGNAL(MethodInfo(TRACKING_AUTHORIZATION_DENIED));
+
+	ClassDB::bind_method(D_METHOD("open_app_settings"), &AdmobPlugin::open_app_settings);
 }
 
 Error AdmobPlugin::initialize() {
@@ -468,7 +480,7 @@ Error AdmobPlugin::load_consent_form() {
 		return FAILED;
 	}
 
-	[UMPConsentForm loadWithCompletionHandler:^(UMPConsentForm * _Nullable umpConsentForm, NSError * _Nullable error) {
+	[UMPConsentForm loadWithCompletionHandler:^(UMPConsentForm * _Nullable umpConsentForm, NSError* _Nullable error) {
 		if (error) {
 			Dictionary errorDictionary = [GAPConverter nsFormErrorToGodotDictionary:error];
 			emit_signal(CONSENT_FORM_FAILED_TO_LOAD_SIGNAL, errorDictionary);
@@ -486,7 +498,7 @@ Error AdmobPlugin::load_consent_form() {
 Error AdmobPlugin::show_consent_form() {
 	if (consentForm) {
 		NSLog(@"AdmobPlugin show_consent_form");
-		[consentForm presentFromViewController:AppDelegate.viewController completionHandler:^(NSError * _Nullable error) {
+		[consentForm presentFromViewController:AppDelegate.viewController completionHandler:^(NSError* _Nullable error) {
 			Dictionary formErrorDictionary;
 			if (error) {
 				NSLog(@"AdmobPlugin show_consent_form: Error presenting UMPConsentForm");
@@ -543,6 +555,32 @@ void AdmobPlugin::update_consent_info(Dictionary consentRequestParameters) {
 void AdmobPlugin::reset_consent_info() {
 	NSLog(@"AdmobPlugin reset_consent_info");
 	[UMPConsentInformation.sharedInstance reset];
+}
+
+void AdmobPlugin::request_tracking_authorization() {
+	NSLog(@"AdmobPlugin request_tracking_authorization");
+	if (@available(iOS 14, *)) {
+		[ATTrackingManager requestTrackingAuthorizationWithCompletionHandler:^(ATTrackingManagerAuthorizationStatus status) {
+			if (status == ATTrackingManagerAuthorizationStatusAuthorized) {
+				NSLog(@"Tracking has been authorized for %@", [[ASIdentifierManager sharedManager].advertisingIdentifier UUIDString]);
+				emit_signal(TRACKING_AUTHORIZATION_GRANTED);
+			} else {
+				NSLog(@"Tracking has been denied for %@ with status '%@'", [[ASIdentifierManager sharedManager].advertisingIdentifier UUIDString],
+					[GAPConverter convertTrackingStatusToString: status]);
+				emit_signal(TRACKING_AUTHORIZATION_DENIED);
+			}
+		}];
+	}
+	else {
+		NSLog(@"AdmobPlugin::request_tracking_authorization: ERROR: iOS version 14.0 or greater is required!");
+	}
+}
+
+void AdmobPlugin::open_app_settings() {
+	// Create the URL that deep links to app's custom settings.
+	NSURL *url = [[NSURL alloc] initWithString:UIApplicationOpenSettingsURLString];
+	// Ask the system to open that URL.
+	[[UIApplication sharedApplication] openURL:url options:@{} completionHandler:nil];
 }
 
 AdmobPlugin* AdmobPlugin::get_singleton() {

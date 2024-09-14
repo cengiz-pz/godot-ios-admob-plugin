@@ -6,6 +6,7 @@
 #define gap_converter_h
 
 #import <Foundation/Foundation.h>
+#import <AppTrackingTransparency/AppTrackingTransparency.h>
 
 #include "core/object/class_db.h"
 #include <UserMessagingPlatform/UMPRequestParameters.h>
@@ -49,6 +50,7 @@
 
 // Util
 + (NSString *) getAdmobDeviceID;
++ (NSString *) convertTrackingStatusToString:(ATTrackingManagerAuthorizationStatus) status API_AVAILABLE(ios(14));
 
 @end
 
