@@ -58,6 +58,11 @@ const PLUGIN_SINGLETON_NAME: String = "AdmobPlugin"
 @export var request_agent: String = PLUGIN_SINGLETON_NAME: set = set_request_agent
 
 @export_group("App Tracking Transparency")
+@export var att_enabled: bool = false:
+	get:
+		return att_enabled
+	set(value):
+		att_enabled = value
 @export_multiline var att_text: String = "": set = set_att_text
 
 @export_category("Banner")
