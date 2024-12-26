@@ -48,6 +48,18 @@ func _on_admob_initialization_completed(status_data: InitializationStatus) -> vo
 	admob.load_rewarded_interstitial_ad()
 
 
+func _on_size_button_pressed() -> void:
+	print(" ------- Get banner size button PRESSED")
+	if _is_banner_loaded:
+		_print_to_screen("Banner size: " + str(admob.get_banner_dimension()))
+
+
+func _on_pixel_size_button_pressed() -> void:
+	print(" ------- Get banner pixel size button PRESSED")
+	if _is_banner_loaded:
+		_print_to_screen("Banner size in pixels: " + str(admob.get_banner_dimension_in_pixels()))
+
+
 func _on_show_banner_button_pressed() -> void:
 	print(" ------- Show banner button PRESSED")
 	if _is_banner_loaded:
