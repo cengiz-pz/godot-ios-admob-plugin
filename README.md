@@ -178,6 +178,23 @@ ___
 
 ___
 
+## ![](addon/icon.png?raw=true) Git addon submodule
+
+
+### ![](addon/icon.png?raw=true) Creating
+
+- `git submodule add -b main --force --name addon https://github.com/cengiz-pz/godot-admob-addon.git addon`
+
+
+### ![](addon/icon.png?raw=true) Updating
+
+- Remove `addon` directory
+- Run `git submodule update --remote --merge`
+
+<br/>
+
+___
+
 ## ![](addon/icon.png?raw=true) Libraries
 
 Library archives will be created in the `bin/release` directory.
