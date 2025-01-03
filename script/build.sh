@@ -280,7 +280,7 @@ function create_zip_archive()
 		cp -r $addon_directory/* $tmp_directory/addons/$plugin_name
 		sed -i '' -e "s/@pluginName@/$plugin_name/g" $tmp_directory/addons/$plugin_name/*.{gd,cfg}
 		sed -i '' -e "s/@pluginVersion@/$PLUGIN_VERSION/g" $tmp_directory/addons/$plugin_name/*.{gd,cfg}
-		sed -i '' -e "s/@pluginNodeType@/$PLUGIN_NODE_TYPE/g" $tmp_directory/addons/$plugin_name/*.{gd,cfg}
+		sed -i '' -e "s/@pluginNodeName@/$PLUGIN_NODE_TYPE/g" $tmp_directory/addons/$plugin_name/*.{gd,cfg}
 		sed -i '' -e "s/@pluginDependencies@/$PLUGIN_DEPENDENCIES/g" $tmp_directory/addons/$plugin_name/*.{gd,cfg}
 	fi
 
