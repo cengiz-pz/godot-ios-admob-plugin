@@ -119,9 +119,34 @@ App Tracking Transparency, or ATT for short, is Apple's opt-in privacy framework
 	- `show_rewarded_interstitial_ad(ad_id: String)`
 
 ## ![](addon/icon.png?raw=true) iOS Export
-- Make sure that the scene that contains the Admob node is selected in the Godot Editor when building and exporting for iOS
-	- Close other scenes to make sure
-	- _Admob node will be searched in the scene that is currently open in the Godot Editor_
+iOS export requires several configuration settings.
+
+### ![](admob/addon_template/icon.png?raw=true) File-based Export Configuration
+In order to enable file-based export configuration, an `export.cfg` file should be placed in the `addons/AdmobPlugin` directory with the file contents formatted as in the example below:
+
+```
+[General]
+is_real = false
+
+[Debug]
+app_id = "ca-app-pub-3940256099942544~3347511713"
+
+[Release]
+app_id = "ca-app-pub-3940256099942544~3347511713"
+
+[ATT]
+att_enabled = true
+att_text = "My ATT text."
+```
+
+The `is_real` and `app_id` configuration items are mandatory and if not found in the `export.cfg` file, then the plugin will fall back to node-based configuration.
+
+### ![](admob/addon_template/icon.png?raw=true) Node-based Export Configuration
+If `export.cfg` file is not found or file-based configuration fails, then the plugin will attempt to load node-based configuration.
+
+During iOS export, the plugin searches for an `Admob` node in the scene that is open in the Godot Editor.  If not found, then the plugin searches for an `Admob` node in the project's main scene.  Therefore; 
+- Make sure that the scene that contains the `Admob` node is selected in the Godot Editor when building and exporting for iOS, or
+- Make sure that your Godot project's main scene contains an `Admob` node
 
 ## ![](addon/icon.png?raw=true) Troubleshooting
 
