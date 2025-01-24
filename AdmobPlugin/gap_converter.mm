@@ -8,6 +8,7 @@
 
 #include <CommonCrypto/CommonDigest.h>
 
+#import "admob_logger.h"
 
 @implementation GAPConverter
 
@@ -91,7 +92,7 @@
 	} else if ([nsString isEqualToString:@"CUSTOM"]) {
 		adPosition = AdPositionCustom;
 	} else {
-		NSLog(@"AdmobPlugin banner load: ERROR: invalid ad position '%@'", nsString);
+		os_log_debug(admob_log, @"AdmobPlugin banner load: ERROR: invalid ad position '%@'", nsString);
 		adPosition = AdPositionTop;
 	}
 
@@ -117,7 +118,7 @@
 		adSize = GADAdSizeFluid;
 	} else {
 		adSize = GADAdSizeInvalid;
-		NSLog(@"AdmobPlugin nsStringToAdSize: ERROR: invalid ad size '%@'", nsString);
+		os_log_debug(admob_log, @"AdmobPlugin nsStringToAdSize: ERROR: invalid ad size '%@'", nsString);
 	}
 
 	return adSize;
