@@ -1,3 +1,7 @@
 [submodule "godot"]
 	path = godot
 	url = https://github.com/godotengine/godot.git
+[submodule "addon"]
+	path = addon
+	url = https://github.com/cengiz-pz/godot-admob-addon.git
+	branch = main

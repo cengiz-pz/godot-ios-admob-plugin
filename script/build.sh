@@ -4,6 +4,8 @@ trap "sleep 1; echo" EXIT
 
 plugin_name="AdmobPlugin"
 PLUGIN_VERSION=''
+PLUGIN_NODE_TYPE="Admob"
+PLUGIN_DEPENDENCIES=""
 supported_godot_versions=("4.2" "4.3" "4.4")
 BUILD_TIMEOUT=40	# increase this value using -t option if device is not able to generate all headers before godot build is killed
 
@@ -276,6 +278,10 @@ function create_zip_archive()
 	then
 		mkdir -p $tmp_directory/addons/$plugin_name
 		cp -r $addon_directory/* $tmp_directory/addons/$plugin_name
+		sed -i '' -e "s/@pluginName@/$plugin_name/g" $tmp_directory/addons/$plugin_name/*.{gd,cfg}
+		sed -i '' -e "s/@pluginVersion@/$PLUGIN_VERSION/g" $tmp_directory/addons/$plugin_name/*.{gd,cfg}
+		sed -i '' -e "s/@pluginNodeName@/$PLUGIN_NODE_TYPE/g" $tmp_directory/addons/$plugin_name/*.{gd,cfg}
+		sed -i '' -e "s/@pluginDependencies@/$PLUGIN_DEPENDENCIES/g" $tmp_directory/addons/$plugin_name/*.{gd,cfg}
 	fi
 
 	mkdir -p $tmp_directory/ios/framework

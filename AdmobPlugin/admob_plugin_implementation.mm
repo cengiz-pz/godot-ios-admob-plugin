@@ -522,15 +522,12 @@ int AdmobPlugin::get_consent_status() {
 	NSLog(@"AdmobPlugin get_consent_status: %ld", (long) status);
 	switch (status) {
 		case UMPConsentStatusUnknown:
-			return 0;
 		case UMPConsentStatusRequired:
-			return 1;
 		case UMPConsentStatusNotRequired:
-			return 2;
 		case UMPConsentStatusObtained:
-			return 3;
+			return status;
 		default:
-			return 0;
+			return UMPConsentStatusUnknown;
 	}
 }
 

@@ -18,6 +18,10 @@ Create an AdMob account at the following link:
 - if needed, [create consent form(s)](https://support.google.com/admob/answer/10113207?hl=en) for your app via the AdMob console
 
 ## ![](addon/icon.png?raw=true) Installation
+_Before installing this plugin, make sure to uninstall any previous versions of the same plugin._
+
+_If installing both iOS and Android versions of the plugin in the same project, then make sure that both versions use the same addon interface version._
+
 There are 2 ways to install the `Admob` plugin into your project:
 - Through the Godot Editor's AssetLib
 - Manually by downloading archives from Github
@@ -33,6 +37,9 @@ Steps:
 - enable the addon via the `Plugins` tab of `Project->Project Settings...` menu, in the Godot Editor
 - enable the plugin via the `iOS` section of `Project->Export...` menu, in the Godot Editor
 
+#### ![](addon/icon.png?raw=true) Installing both iOS and Android versions of the plugin in the same project
+When installing via AssetLib, the installer may display a warning that states "_[x number of]_ files conflict with your project and won't be installed." You can ignore this warning since both versions use the same addon code.
+
 ### ![](addon/icon.png?raw=true) Installing manually
 Steps:
 - download release archive from Github
@@ -40,6 +47,7 @@ Steps:
 - copy to your Godot project's root directory
 - enable the addon via the `Plugins` tab of `Project->Project Settings...` menu, in the Godot Editor
 - enable the plugin via the `iOS` section of `Project->Export...` menu, in the Godot Editor
+
 
 ## ![](addon/icon.png?raw=true) App Tracking Transparency
 App Tracking Transparency, or ATT for short, is Apple's opt-in privacy framework that requires all iOS apps to ask users for permission to share their data. This is done in the form of a popup where users can either consent or deny tracking.
@@ -49,6 +57,7 @@ App Tracking Transparency, or ATT for short, is Apple's opt-in privacy framework
 	- Call `Admob` node's `request_tracking_authorization()` method.
 	- Handle `Admob` node's `tracking_authorization_granted` and `tracking_authorization_denied` signals.
 * If the user initially rejects the tracking request, then later on you can check if the user changed their mind and allow them to change their decision by opening the system app settings using the `Admob` node's `open_app_settings()` method.
+
 
 ## ![](addon/icon.png?raw=true) Usage
 - Add `Admob` node to your main scene and populate the ID fields of the node
@@ -118,10 +127,37 @@ App Tracking Transparency, or ATT for short, is Apple's opt-in privacy framework
 	- `show_rewarded_ad(ad_id: String)`
 	- `show_rewarded_interstitial_ad(ad_id: String)`
 
+
 ## ![](addon/icon.png?raw=true) iOS Export
-- Make sure that the scene that contains the Admob node is selected in the Godot Editor when building and exporting for iOS
-	- Close other scenes to make sure
-	- _Admob node will be searched in the scene that is currently open in the Godot Editor_
+iOS export requires several configuration settings.
+
+### ![](admob/addon_template/icon.png?raw=true) File-based Export Configuration
+In order to enable file-based export configuration, an `export.cfg` file should be placed in the `addons/AdmobPlugin` directory with the file contents formatted as in the example below:
+
+```
+[General]
+is_real = false
+
+[Debug]
+app_id = "ca-app-pub-3940256099942544~3347511713"
+
+[Release]
+app_id = "ca-app-pub-3940256099942544~3347511713"
+
+[ATT]
+att_enabled = true
+att_text = "My ATT text."
+```
+
+The `is_real` and `app_id` configuration items are mandatory and if not found in the `export.cfg` file, then the plugin will fall back to node-based configuration.
+
+### ![](admob/addon_template/icon.png?raw=true) Node-based Export Configuration
+If `export.cfg` file is not found or file-based configuration fails, then the plugin will attempt to load node-based configuration.
+
+During iOS export, the plugin searches for an `Admob` node in the scene that is open in the Godot Editor.  If not found, then the plugin searches for an `Admob` node in the project's main scene.  Therefore; 
+- Make sure that the scene that contains the `Admob` node is selected in the Godot Editor when building and exporting for iOS, or
+- Make sure that your Godot project's main scene contains an `Admob` node
+
 
 ## ![](addon/icon.png?raw=true) Troubleshooting
 
@@ -131,11 +167,10 @@ If your game crashes due to missing APP ID, then make sure that you enter your A
 ### XCode logs
 XCode logs are one of the best tools for troubleshooting unexpected behavior. View XCode logs while running your game to troubleshoot any issues.
 
-
 ### Troubleshooting guide
 Refer to Godot's [Troubleshooting Guide](https://docs.godotengine.org/en/stable/tutorials/export/exporting_for_ios.html#troubleshooting).
 
-<br/><br/><br/>
+<br/><br/>
 
 ---
 # ![](addon/icon.png?raw=true) Credits
@@ -145,8 +180,7 @@ Based on [Godot iOS Plugin Template](https://github.com/cengiz-pz/godot-ios-plug
 
 Original repository: [Godot iOS Admob Plugin](https://github.com/cengiz-pz/godot-ios-admob-plugin)
 
-<br/><br/><br/>
-
+<br/><br/>
 
 ___
 
@@ -178,11 +212,27 @@ ___
 
 ___
 
+## ![](addon/icon.png?raw=true) Git addon submodule
+
+
+### ![](addon/icon.png?raw=true) Creating
+
+- `git submodule add -b main --force --name addon https://github.com/cengiz-pz/godot-admob-addon.git addon`
+
+### ![](addon/icon.png?raw=true) Updating
+
+- Remove `addon` directory
+- Run `git submodule update --remote --merge`
+
+<br/>
+
+___
+
 ## ![](addon/icon.png?raw=true) Libraries
 
 Library archives will be created in the `bin/release` directory.
 
-<br/><br/><br/>
+<br/><br/>
 
 ---
 # ![](addon/icon.png?raw=true) All Plugins
