@@ -24,7 +24,7 @@
 
 	[GADRewardedInterstitialAd loadWithAdUnitID:loadAdRequest.adUnitId request:gadRequest completionHandler:^(GADRewardedInterstitialAd* ad, NSError* error) {
 		if (error) {
-			os_log_debug(admob_log, "Failed to load RewardedInterstitialAd with error: %@", [error localizedDescription]);
+			os_log_error(admob_log, "Failed to load RewardedInterstitialAd with error: %@", [error localizedDescription]);
 			AdmobPlugin::get_singleton()->emit_signal(REWARDED_INTERSTITIAL_AD_FAILED_TO_LOAD_SIGNAL, [GAPConverter nsStringToGodotString:self.adId],
 						[GAPConverter nsLoadErrorToGodotDictionary:error]);
 		}

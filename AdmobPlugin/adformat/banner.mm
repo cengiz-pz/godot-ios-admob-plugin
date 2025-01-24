@@ -162,7 +162,7 @@
 }
 
 - (void) bannerView: (GADBannerView *) bannerView didFailToReceiveAdWithError: (NSError *) error {
-	os_log_debug(admob_log, "BannerAd bannerView:didFailToReceiveAdWithError: %@", [error localizedDescription]);
+	os_log_error(admob_log, "BannerAd bannerView:didFailToReceiveAdWithError: %@", [error localizedDescription]);
 	
 	AdmobPlugin::get_singleton()->emit_signal(BANNER_AD_FAILED_TO_LOAD_SIGNAL, [GAPConverter nsStringToGodotString:self.adId],
 				[GAPConverter nsLoadErrorToGodotDictionary:error]);

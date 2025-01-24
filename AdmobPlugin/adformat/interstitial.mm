@@ -26,7 +26,7 @@
 
 	[GADInterstitialAd loadWithAdUnitID:loadAdRequest.adUnitId request:gadRequest completionHandler:^(GADInterstitialAd* ad, NSError* error) {
 		if (error) {
-			os_log_debug(admob_log, "failed to load InterstitialAd with error: %@", [error localizedDescription]);
+			os_log_error(admob_log, "failed to load InterstitialAd with error: %@", [error localizedDescription]);
 			AdmobPlugin::get_singleton()->emit_signal(INTERSTITIAL_AD_FAILED_TO_LOAD_SIGNAL, [GAPConverter nsStringToGodotString:self.adId],
 						[GAPConverter nsLoadErrorToGodotDictionary:error]);
 		}
