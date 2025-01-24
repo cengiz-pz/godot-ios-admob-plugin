@@ -16,14 +16,14 @@
 AdmobPlugin *plugin;
 
 void admob_plugin_init() {
-	os_log_debug(admob_log, @"init plugin");
+	os_log_debug(admob_log, "init plugin");
 
 	plugin = memnew(AdmobPlugin);
 	Engine::get_singleton()->add_singleton(Engine::Singleton("AdmobPlugin", plugin));
 }
 
 void admob_plugin_deinit() {
-	os_log_debug(admob_log, @"deinit plugin");
+	os_log_debug(admob_log, "deinit plugin");
 	
 	if (plugin) {
 		memdelete(plugin);

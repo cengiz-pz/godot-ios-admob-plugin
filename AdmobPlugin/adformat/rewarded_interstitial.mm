@@ -24,7 +24,7 @@
 
 	[GADRewardedInterstitialAd loadWithAdUnitID:loadAdRequest.adUnitId request:gadRequest completionHandler:^(GADRewardedInterstitialAd* ad, NSError* error) {
 		if (error) {
-			os_log_debug(admob_log, @"Failed to load RewardedInterstitialAd with error: %@", [error localizedDescription]);
+			os_log_debug(admob_log, "Failed to load RewardedInterstitialAd with error: %@", [error localizedDescription]);
 			AdmobPlugin::get_singleton()->emit_signal(REWARDED_INTERSTITIAL_AD_FAILED_TO_LOAD_SIGNAL, [GAPConverter nsStringToGodotString:self.adId],
 						[GAPConverter nsLoadErrorToGodotDictionary:error]);
 		}
@@ -46,7 +46,7 @@
 				self.gadAd.serverSideVerificationOptions = gadOptions;
 			}
 		
-			os_log_debug(admob_log, @"RewardedInterstitialAd %@ loaded successfully", self.adId);
+			os_log_debug(admob_log, "RewardedInterstitialAd %@ loaded successfully", self.adId);
 			AdmobPlugin::get_singleton()->emit_signal(REWARDED_INTERSTITIAL_AD_LOADED_SIGNAL, [GAPConverter nsStringToGodotString:self.adId]);
 		}
 	}];
@@ -61,38 +61,38 @@
 		 }];
 	}
 	else {
-		os_log_debug(admob_log, @"RewardedInterstitialAd show: ad not set");
+		os_log_debug(admob_log, "RewardedInterstitialAd show: ad not set");
 	}
 }
 
 - (void) adDidRecordImpression:(nonnull id<GADFullScreenPresentingAd>) ad {
-	os_log_debug(admob_log, @"RewardedInterstitialAd adDidRecordImpression.");
+	os_log_debug(admob_log, "RewardedInterstitialAd adDidRecordImpression.");
 	AdmobPlugin::get_singleton()->emit_signal(REWARDED_INTERSTITIAL_AD_IMPRESSION_SIGNAL, [GAPConverter nsStringToGodotString: self.adId]);
 }
 
 - (void) adDidRecordClick:(nonnull id<GADFullScreenPresentingAd>) ad {
-	os_log_debug(admob_log, @"RewardedInterstitialAd adDidRecordClick.");
+	os_log_debug(admob_log, "RewardedInterstitialAd adDidRecordClick.");
 	AdmobPlugin::get_singleton()->emit_signal(REWARDED_INTERSTITIAL_AD_CLICKED_SIGNAL, [GAPConverter nsStringToGodotString: self.adId]);
 }
 
 - (void) ad:(nonnull id<GADFullScreenPresentingAd>) ad didFailToPresentFullScreenContentWithError:(nonnull NSError *) error {
-	os_log_debug(admob_log, @"RewardedInterstitialAd did fail to present full screen content.");
+	os_log_debug(admob_log, "RewardedInterstitialAd did fail to present full screen content.");
 	AdmobPlugin::get_singleton()->emit_signal(REWARDED_INTERSTITIAL_AD_FAILED_TO_SHOW_FULL_SCREEN_CONTENT_SIGNAL, [GAPConverter nsStringToGodotString:self.adId],
 				[GAPConverter nsAdErrorToGodotDictionary:error]);
 }
 
 - (void) adWillPresentFullScreenContent:(nonnull id<GADFullScreenPresentingAd>) ad {
-	os_log_debug(admob_log, @"RewardedInterstitialAd will present full screen content.");
+	os_log_debug(admob_log, "RewardedInterstitialAd will present full screen content.");
 	AdmobPlugin::get_singleton()->emit_signal(REWARDED_INTERSTITIAL_AD_SHOWED_FULL_SCREEN_CONTENT_SIGNAL, [GAPConverter nsStringToGodotString:self.adId]);
 
 	if (AdFormatBase.pauseOnBackground) {
-		os_log_debug(admob_log, @"RewardedInterstitialAd pauseOnBackground");
+		os_log_debug(admob_log, "RewardedInterstitialAd pauseOnBackground");
 		OS_IOS::get_singleton()->on_focus_out();
 	}
 }
 
 - (void) adDidDismissFullScreenContent:(nonnull id<GADFullScreenPresentingAd>) ad {
-	os_log_debug(admob_log, @"RewardedInterstitialAd did dismiss full screen content.");
+	os_log_debug(admob_log, "RewardedInterstitialAd did dismiss full screen content.");
 	AdmobPlugin::get_singleton()->emit_signal(REWARDED_INTERSTITIAL_AD_DISMISSED_FULL_SCREEN_CONTENT_SIGNAL, [GAPConverter nsStringToGodotString:self.adId]);
 	OS_IOS::get_singleton()->on_focus_in();
 }

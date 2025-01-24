@@ -88,7 +88,7 @@
 
 - (void) updateBannerPosition:(AdPosition) adPosition {
 	if (@available(iOS 11.0, *)) {
-		os_log_debug(admob_log, @"BannerAd updateBannerPosition: position=%lu", (unsigned long) adPosition);
+		os_log_debug(admob_log, "BannerAd updateBannerPosition: position=%lu", (unsigned long) adPosition);
 		[AppDelegate.viewController.view removeConstraints:self.bannerView.constraints];
 
 		switch (adPosition) {
@@ -144,14 +144,14 @@
 		}
 	}
 	else {
-		os_log_debug(admob_log, @"iOS 11.0 or later required.");
+		os_log_debug(admob_log, "iOS 11.0 or later required.");
 	}
 
 	[AppDelegate.viewController.view layoutIfNeeded];
 }
 
 - (void) bannerViewDidReceiveAd:(GADBannerView*) bannerView {
-	os_log_debug(admob_log, @"BannerAd bannerViewDidReceiveAd %@", self.adId);
+	os_log_debug(admob_log, "BannerAd bannerViewDidReceiveAd %@", self.adId);
 	if (self.isLoaded) {
 		AdmobPlugin::get_singleton()->emit_signal(BANNER_AD_REFRESHED_SIGNAL, [GAPConverter nsStringToGodotString:self.adId]);
 	}
@@ -162,29 +162,29 @@
 }
 
 - (void) bannerView: (GADBannerView *) bannerView didFailToReceiveAdWithError: (NSError *) error {
-	os_log_debug(admob_log, @"BannerAd bannerView:didFailToReceiveAdWithError: %@", [error localizedDescription]);
+	os_log_debug(admob_log, "BannerAd bannerView:didFailToReceiveAdWithError: %@", [error localizedDescription]);
 	
 	AdmobPlugin::get_singleton()->emit_signal(BANNER_AD_FAILED_TO_LOAD_SIGNAL, [GAPConverter nsStringToGodotString:self.adId],
 				[GAPConverter nsLoadErrorToGodotDictionary:error]);
 }
 
 - (void) bannerViewDidRecordClick: (GADBannerView*) bannerView {
-	os_log_debug(admob_log, @"BannerAd bannerViewDidRecordClick");
+	os_log_debug(admob_log, "BannerAd bannerViewDidRecordClick");
 	AdmobPlugin::get_singleton()->emit_signal(BANNER_AD_CLICKED_SIGNAL, [GAPConverter nsStringToGodotString:self.adId]);
 }
 
 - (void) bannerViewDidRecordImpression: (GADBannerView*) bannerView {
-	os_log_debug(admob_log, @"BannerAd bannerViewDidRecordImpression");
+	os_log_debug(admob_log, "BannerAd bannerViewDidRecordImpression");
 	AdmobPlugin::get_singleton()->emit_signal(BANNER_AD_IMPRESSION_SIGNAL, [GAPConverter nsStringToGodotString:self.adId]);
 }
 
 - (void) bannerViewWillPresentScreen: (GADBannerView*) bannerView {
-	os_log_debug(admob_log, @"BannerAd bannerViewWillPresentScreen");
+	os_log_debug(admob_log, "BannerAd bannerViewWillPresentScreen");
 	AdmobPlugin::get_singleton()->emit_signal(BANNER_AD_OPENED_SIGNAL, [GAPConverter nsStringToGodotString:self.adId]);
 }
 
 - (void) bannerViewDidDismissScreen: (GADBannerView*) bannerView {
-	os_log_debug(admob_log, @"BannerAd bannerViewDidDismissScreen");
+	os_log_debug(admob_log, "BannerAd bannerViewDidDismissScreen");
 	AdmobPlugin::get_singleton()->emit_signal(BANNER_AD_CLOSED_SIGNAL, [GAPConverter nsStringToGodotString:self.adId]);
 }
 

@@ -147,10 +147,10 @@ void AdmobPlugin::_bind_methods() {
 }
 
 Error AdmobPlugin::initialize() {
-	os_log_debug(admob_log, @"AdmobPlugin initialize");
+	os_log_debug(admob_log, "AdmobPlugin initialize");
 
 	if (initialized) {
-		os_log_debug(admob_log, @"AdmobPlugin already initialized");
+		os_log_debug(admob_log, "AdmobPlugin already initialized");
 		return FAILED;
 	}
 
@@ -168,7 +168,7 @@ Error AdmobPlugin::initialize() {
 	{
 		Dictionary dictionary = [GAPConverter initializationStatusToGodotDictionary:status];
 		initialized = true;
-		os_log_debug(admob_log, @"AdmobPlugin initialization completed");
+		os_log_debug(admob_log, "AdmobPlugin initialization completed");
 		emit_signal(INITIALIZATION_COMPLETED_SIGNAL, dictionary);
 	}];
 
@@ -176,10 +176,10 @@ Error AdmobPlugin::initialize() {
 }
 
 Error AdmobPlugin::set_request_configuration(Dictionary configData) {
-	os_log_debug(admob_log, @"AdmobPlugin set_request_configuration");
+	os_log_debug(admob_log, "AdmobPlugin set_request_configuration");
 
 	if (initialized == false) {
-		os_log_debug(admob_log, @"AdmobPlugin has not been initialized");
+		os_log_debug(admob_log, "AdmobPlugin has not been initialized");
 		return FAILED;
 	}
 	
@@ -208,7 +208,7 @@ void AdmobPlugin::set_ios_app_pause_on_background(bool pause) {
 }
 
 Dictionary AdmobPlugin::get_current_adaptive_banner_size(int width) {
-	os_log_debug(admob_log, @"AdmobPlugin get_current_adaptive_banner_size");
+	os_log_debug(admob_log, "AdmobPlugin get_current_adaptive_banner_size");
 	int currentWidth = (width == FULL_WIDTH) ? getAdWidth() : width;
 
 	GADAdSize adSize = GADCurrentOrientationAnchoredAdaptiveBannerAdSizeWithWidth(currentWidth);
@@ -218,7 +218,7 @@ Dictionary AdmobPlugin::get_current_adaptive_banner_size(int width) {
 }
 
 Dictionary AdmobPlugin::get_portrait_adaptive_banner_size(int width) {
-	os_log_debug(admob_log, @"AdmobPlugin get_portrait_adaptive_banner_size");
+	os_log_debug(admob_log, "AdmobPlugin get_portrait_adaptive_banner_size");
 	int currentWidth = (width == FULL_WIDTH) ? getAdWidth() : width;
 
 	GADAdSize adSize = GADPortraitAnchoredAdaptiveBannerAdSizeWithWidth(currentWidth);
@@ -228,7 +228,7 @@ Dictionary AdmobPlugin::get_portrait_adaptive_banner_size(int width) {
 }
 
 Dictionary AdmobPlugin::get_landscape_adaptive_banner_size(int width) {
-	os_log_debug(admob_log, @"AdmobPlugin get_landscape_adaptive_banner_size");
+	os_log_debug(admob_log, "AdmobPlugin get_landscape_adaptive_banner_size");
 	int currentWidth = (width == FULL_WIDTH) ? getAdWidth() : width;
 
 	GADAdSize adSize = GADLandscapeAnchoredAdaptiveBannerAdSizeWithWidth(currentWidth);
@@ -250,10 +250,10 @@ CGFloat AdmobPlugin::getAdWidth() {
 }
 
 Error AdmobPlugin::load_banner_ad(Dictionary adData) {
-	os_log_debug(admob_log, @"AdmobPlugin load_banner_ad");
+	os_log_debug(admob_log, "AdmobPlugin load_banner_ad");
 
 	if (initialized == false) {
-		os_log_debug(admob_log, @"AdmobPlugin has not been initialized");
+		os_log_debug(admob_log, "AdmobPlugin has not been initialized");
 		return FAILED;
 	}
 
@@ -270,7 +270,7 @@ Error AdmobPlugin::load_banner_ad(Dictionary adData) {
 }
 
 void AdmobPlugin::show_banner_ad(String adId) {
-	os_log_debug(admob_log, @"AdmobPlugin show_banner_ad %s", adId.utf8().get_data());
+	os_log_debug(admob_log, "AdmobPlugin show_banner_ad %s", adId.utf8().get_data());
 
 	BannerAd* ad = (BannerAd*) bannerAds[[GAPConverter toNsString:adId]];
 	if (ad) {
@@ -279,7 +279,7 @@ void AdmobPlugin::show_banner_ad(String adId) {
 }
 
 void AdmobPlugin::hide_banner_ad(String adId) {
-	os_log_debug(admob_log, @"AdmobPlugin hide_banner_ad %s", adId.utf8().get_data());
+	os_log_debug(admob_log, "AdmobPlugin hide_banner_ad %s", adId.utf8().get_data());
 
 	BannerAd* ad = (BannerAd*) bannerAds[[GAPConverter toNsString:adId]];
 	if (ad) {
@@ -288,7 +288,7 @@ void AdmobPlugin::hide_banner_ad(String adId) {
 }
 
 void AdmobPlugin::remove_banner_ad(String adId) {
-	os_log_debug(admob_log, @"AdmobPlugin remove_banner_ad %s", adId.utf8().get_data());
+	os_log_debug(admob_log, "AdmobPlugin remove_banner_ad %s", adId.utf8().get_data());
 
 	NSString* key = [GAPConverter toNsString:adId];
 	if (bannerAds[key]) {
@@ -296,12 +296,12 @@ void AdmobPlugin::remove_banner_ad(String adId) {
 		[bannerAds removeObjectForKey:key];
 	}
 	else {
-		os_log_debug(admob_log, @"AdmobPlugin remove_banner_ad: ERROR: ad with id '%s' not found!", adId.utf8().get_data());
+		os_log_debug(admob_log, "AdmobPlugin remove_banner_ad: ERROR: ad with id '%s' not found!", adId.utf8().get_data());
 	}
 }
 
 int AdmobPlugin::get_banner_width(String adId) {
-	os_log_debug(admob_log, @"AdmobPlugin get_width %s", adId.utf8().get_data());
+	os_log_debug(admob_log, "AdmobPlugin get_width %s", adId.utf8().get_data());
 
 	BannerAd* ad = (BannerAd*) bannerAds[[GAPConverter toNsString:adId]];
 	if (ad) {
@@ -311,7 +311,7 @@ int AdmobPlugin::get_banner_width(String adId) {
 }
 
 int AdmobPlugin::get_banner_height(String adId) {
-	os_log_debug(admob_log, @"AdmobPlugin get_height %s", adId.utf8().get_data());
+	os_log_debug(admob_log, "AdmobPlugin get_height %s", adId.utf8().get_data());
 
 	BannerAd* ad = (BannerAd*) bannerAds[[GAPConverter toNsString:adId]];
 	if (ad) {
@@ -321,7 +321,7 @@ int AdmobPlugin::get_banner_height(String adId) {
 }
 
 int AdmobPlugin::get_banner_width_in_pixels(String adId) {
-	os_log_debug(admob_log, @"AdmobPlugin get_width_in_pixels %s", adId.utf8().get_data());
+	os_log_debug(admob_log, "AdmobPlugin get_width_in_pixels %s", adId.utf8().get_data());
 
 	BannerAd* ad = (BannerAd*) bannerAds[[GAPConverter toNsString:adId]];
 	if (ad) {
@@ -331,7 +331,7 @@ int AdmobPlugin::get_banner_width_in_pixels(String adId) {
 }
 
 int AdmobPlugin::get_banner_height_in_pixels(String adId) {
-	os_log_debug(admob_log, @"AdmobPlugin get_height_in_pixels %s", adId.utf8().get_data());
+	os_log_debug(admob_log, "AdmobPlugin get_height_in_pixels %s", adId.utf8().get_data());
 
 	BannerAd* ad = (BannerAd*) bannerAds[[GAPConverter toNsString:adId]];
 	if (ad) {
@@ -341,10 +341,10 @@ int AdmobPlugin::get_banner_height_in_pixels(String adId) {
 }
 
 Error AdmobPlugin::load_interstitial_ad(Dictionary adData) {
-	os_log_debug(admob_log, @"AdmobPlugin load_interstitial_ad");
+	os_log_debug(admob_log, "AdmobPlugin load_interstitial_ad");
 
 	if (initialized == false) {
-		os_log_debug(admob_log, @"AdmobPlugin has not been initialized");
+		os_log_debug(admob_log, "AdmobPlugin has not been initialized");
 		return FAILED;
 	}
 
@@ -361,34 +361,34 @@ Error AdmobPlugin::load_interstitial_ad(Dictionary adData) {
 }
 
 void AdmobPlugin::show_interstitial_ad(String adId) {
-	os_log_debug(admob_log, @"AdmobPlugin show_interstitial_ad %s", adId.utf8().get_data());
+	os_log_debug(admob_log, "AdmobPlugin show_interstitial_ad %s", adId.utf8().get_data());
 
 	InterstitialAd* ad = (InterstitialAd*) interstitialAds[[GAPConverter toNsString:adId]];
 	if (ad) {
 		[ad show];
 	}
 	else {
-		os_log_debug(admob_log, @"AdmobPlugin show_interstitial_ad: ERROR: ad with id '%s' not found!", adId.utf8().get_data());
+		os_log_debug(admob_log, "AdmobPlugin show_interstitial_ad: ERROR: ad with id '%s' not found!", adId.utf8().get_data());
 	}
 }
 
 void AdmobPlugin::remove_interstitial_ad(String adId) {
-	os_log_debug(admob_log, @"AdmobPlugin remove_interstitial_ad %s", adId.utf8().get_data());
+	os_log_debug(admob_log, "AdmobPlugin remove_interstitial_ad %s", adId.utf8().get_data());
 
 	NSString* key = [GAPConverter toNsString:adId];
 	if (interstitialAds[key]) {
 		[interstitialAds removeObjectForKey:key];
 	}
 	else {
-		os_log_debug(admob_log, @"AdmobPlugin remove_interstitial_ad: ERROR: ad with id '%s' not found!", adId.utf8().get_data());
+		os_log_debug(admob_log, "AdmobPlugin remove_interstitial_ad: ERROR: ad with id '%s' not found!", adId.utf8().get_data());
 	}
 }
 
 Error AdmobPlugin::load_rewarded_ad(Dictionary adData) {
-	os_log_debug(admob_log, @"AdmobPlugin load_rewarded_ad");
+	os_log_debug(admob_log, "AdmobPlugin load_rewarded_ad");
 
 	if (initialized == false) {
-		os_log_debug(admob_log, @"AdmobPlugin has not been initialized");
+		os_log_debug(admob_log, "AdmobPlugin has not been initialized");
 		return FAILED;
 	}
 
@@ -405,34 +405,34 @@ Error AdmobPlugin::load_rewarded_ad(Dictionary adData) {
 }
 
 void AdmobPlugin::show_rewarded_ad(String adId) {
-	os_log_debug(admob_log, @"AdmobPlugin show_rewarded_ad %s", adId.utf8().get_data());
+	os_log_debug(admob_log, "AdmobPlugin show_rewarded_ad %s", adId.utf8().get_data());
 
 	RewardedAd* ad = (RewardedAd*) rewardedAds[[GAPConverter toNsString:adId]];
 	if (ad) {
 		[ad show];
 	}
 	else {
-		os_log_debug(admob_log, @"AdmobPlugin show_rewarded_ad: ERROR: ad with id '%s' not found!", adId.utf8().get_data());
+		os_log_debug(admob_log, "AdmobPlugin show_rewarded_ad: ERROR: ad with id '%s' not found!", adId.utf8().get_data());
 	}
 }
 
 void AdmobPlugin::remove_rewarded_ad(String adId) {
-	os_log_debug(admob_log, @"AdmobPlugin remove_rewarded_ad %s", adId.utf8().get_data());
+	os_log_debug(admob_log, "AdmobPlugin remove_rewarded_ad %s", adId.utf8().get_data());
 
 	NSString* key = [GAPConverter toNsString:adId];
 	if (rewardedAds[key]) {
 		[rewardedAds removeObjectForKey:key];
 	}
 	else {
-		os_log_debug(admob_log, @"AdmobPlugin remove_rewarded_ad: ERROR: ad with id '%s' not found!", adId.utf8().get_data());
+		os_log_debug(admob_log, "AdmobPlugin remove_rewarded_ad: ERROR: ad with id '%s' not found!", adId.utf8().get_data());
 	}
 }
 
 Error AdmobPlugin::load_rewarded_interstitial_ad(Dictionary adData) {
-	os_log_debug(admob_log, @"AdmobPlugin load_rewarded_interstitial_ad");
+	os_log_debug(admob_log, "AdmobPlugin load_rewarded_interstitial_ad");
 
 	if (initialized == false) {
-		os_log_debug(admob_log, @"AdmobPlugin has not been initialized");
+		os_log_debug(admob_log, "AdmobPlugin has not been initialized");
 		return FAILED;
 	}
 
@@ -449,34 +449,34 @@ Error AdmobPlugin::load_rewarded_interstitial_ad(Dictionary adData) {
 }
 
 void AdmobPlugin::show_rewarded_interstitial_ad(String adId) {
-	os_log_debug(admob_log, @"AdmobPlugin show_rewarded_interstitial_ad %s", adId.utf8().get_data());
+	os_log_debug(admob_log, "AdmobPlugin show_rewarded_interstitial_ad %s", adId.utf8().get_data());
 
 	RewardedInterstitialAd* ad = (RewardedInterstitialAd*) rewardedInterstitialAds[[GAPConverter toNsString:adId]];
 	if (ad) {
 		[ad show];
 	}
 	else {
-		os_log_debug(admob_log, @"AdmobPlugin show_rewarded_interstitial_ad: ERROR: ad with id '%s' not found!", adId.utf8().get_data());
+		os_log_debug(admob_log, "AdmobPlugin show_rewarded_interstitial_ad: ERROR: ad with id '%s' not found!", adId.utf8().get_data());
 	}
 }
 
 void AdmobPlugin::remove_rewarded_interstitial_ad(String adId) {
-	os_log_debug(admob_log, @"AdmobPlugin remove_rewarded_interstitial_ad %s", adId.utf8().get_data());
+	os_log_debug(admob_log, "AdmobPlugin remove_rewarded_interstitial_ad %s", adId.utf8().get_data());
 
 	NSString* key = [GAPConverter toNsString:adId];
 	if (rewardedInterstitialAds[key]) {
 		[rewardedInterstitialAds removeObjectForKey:key];
 	}
 	else {
-		os_log_debug(admob_log, @"AdmobPlugin remove_rewarded_interstitial_ad: ERROR: ad with id '%s' not found!", adId.utf8().get_data());
+		os_log_debug(admob_log, "AdmobPlugin remove_rewarded_interstitial_ad: ERROR: ad with id '%s' not found!", adId.utf8().get_data());
 	}
 }
 
 Error AdmobPlugin::load_consent_form() {
-	os_log_debug(admob_log, @"AdmobPlugin load_consent_form");
+	os_log_debug(admob_log, "AdmobPlugin load_consent_form");
 
 	if (initialized == false) {
-		os_log_debug(admob_log, @"AdmobPlugin has not been initialized");
+		os_log_debug(admob_log, "AdmobPlugin has not been initialized");
 		return FAILED;
 	}
 
@@ -497,20 +497,20 @@ Error AdmobPlugin::load_consent_form() {
 
 Error AdmobPlugin::show_consent_form() {
 	if (consentForm) {
-		os_log_debug(admob_log, @"AdmobPlugin show_consent_form");
+		os_log_debug(admob_log, "AdmobPlugin show_consent_form");
 		[consentForm presentFromViewController:AppDelegate.viewController completionHandler:^(NSError* _Nullable error) {
 			Dictionary formErrorDictionary;
 			if (error) {
-				os_log_debug(admob_log, @"AdmobPlugin show_consent_form: Error presenting UMPConsentForm");
+				os_log_debug(admob_log, "AdmobPlugin show_consent_form: Error presenting UMPConsentForm");
 				formErrorDictionary = [GAPConverter nsFormErrorToGodotDictionary:error];
 			}
-			os_log_debug(admob_log, @"AdmobPlugin show_consent_form: completion handler");
+			os_log_debug(admob_log, "AdmobPlugin show_consent_form: completion handler");
 
 			AdmobPlugin::get_singleton()->emit_signal(CONSENT_FORM_DISMISSED_SIGNAL, formErrorDictionary);
 		}];
 	}
 	else {
-		os_log_debug(admob_log, @"AdmobPlugin show_consent_form: ERROR: consent form not found!");
+		os_log_debug(admob_log, "AdmobPlugin show_consent_form: ERROR: consent form not found!");
 		return FAILED;
 	}
 
@@ -519,7 +519,7 @@ Error AdmobPlugin::show_consent_form() {
 
 int AdmobPlugin::get_consent_status() {
 	UMPConsentStatus status = [UMPConsentInformation.sharedInstance consentStatus];
-	os_log_debug(admob_log, @"AdmobPlugin get_consent_status: %ld", (long) status);
+	os_log_debug(admob_log, "AdmobPlugin get_consent_status: %ld", (long) status);
 	switch (status) {
 		case UMPConsentStatusUnknown:
 		case UMPConsentStatusRequired:
@@ -536,7 +536,7 @@ bool AdmobPlugin::is_consent_form_available() {
 }
 
 void AdmobPlugin::update_consent_info(Dictionary consentRequestParameters) {
-	os_log_debug(admob_log, @"AdmobPlugin update_consent_info");
+	os_log_debug(admob_log, "AdmobPlugin update_consent_info");
 	UMPRequestParameters* parameters = [GAPConverter godotDictionaryToUMPRequestParameters:consentRequestParameters];
 	[UMPConsentInformation.sharedInstance requestConsentInfoUpdateWithParameters:parameters completionHandler:^(NSError *_Nullable error) {
 		if (error) {
@@ -550,26 +550,26 @@ void AdmobPlugin::update_consent_info(Dictionary consentRequestParameters) {
 }
 
 void AdmobPlugin::reset_consent_info() {
-	os_log_debug(admob_log, @"AdmobPlugin reset_consent_info");
+	os_log_debug(admob_log, "AdmobPlugin reset_consent_info");
 	[UMPConsentInformation.sharedInstance reset];
 }
 
 void AdmobPlugin::request_tracking_authorization() {
-	os_log_debug(admob_log, @"AdmobPlugin request_tracking_authorization");
+	os_log_debug(admob_log, "AdmobPlugin request_tracking_authorization");
 	if (@available(iOS 14, *)) {
 		[ATTrackingManager requestTrackingAuthorizationWithCompletionHandler:^(ATTrackingManagerAuthorizationStatus status) {
 			if (status == ATTrackingManagerAuthorizationStatusAuthorized) {
-				os_log_debug(admob_log, @"Tracking has been authorized for %@", [[ASIdentifierManager sharedManager].advertisingIdentifier UUIDString]);
+				os_log_debug(admob_log, "Tracking has been authorized for %@", [[ASIdentifierManager sharedManager].advertisingIdentifier UUIDString]);
 				emit_signal(TRACKING_AUTHORIZATION_GRANTED);
 			} else {
-				os_log_debug(admob_log, @"Tracking has been denied for %@ with status '%@'", [[ASIdentifierManager sharedManager].advertisingIdentifier UUIDString],
+				os_log_debug(admob_log, "Tracking has been denied for %@ with status '%@'", [[ASIdentifierManager sharedManager].advertisingIdentifier UUIDString],
 					[GAPConverter convertTrackingStatusToString: status]);
 				emit_signal(TRACKING_AUTHORIZATION_DENIED);
 			}
 		}];
 	}
 	else {
-		os_log_debug(admob_log, @"AdmobPlugin::request_tracking_authorization: ERROR: iOS version 14.0 or greater is required!");
+		os_log_debug(admob_log, "AdmobPlugin::request_tracking_authorization: ERROR: iOS version 14.0 or greater is required!");
 	}
 }
 
@@ -585,7 +585,7 @@ AdmobPlugin* AdmobPlugin::get_singleton() {
 }
 
 AdmobPlugin::AdmobPlugin() {
-	os_log_debug(admob_log, @"constructor AdmobPlugin");
+	os_log_debug(admob_log, "constructor AdmobPlugin");
 
 	ERR_FAIL_COND(instance != NULL);
 	
@@ -593,7 +593,7 @@ AdmobPlugin::AdmobPlugin() {
 }
 
 AdmobPlugin::~AdmobPlugin() {
-	os_log_debug(admob_log, @"destructor AdmobPlugin");
+	os_log_debug(admob_log, "destructor AdmobPlugin");
 	if (instance == this) {
 		instance = NULL;
 	}
