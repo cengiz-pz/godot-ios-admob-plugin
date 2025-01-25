@@ -150,7 +150,7 @@ Error AdmobPlugin::initialize() {
 	os_log_debug(admob_log, "AdmobPlugin initialize");
 
 	if (initialized) {
-		os_log_debug(admob_log, "AdmobPlugin already initialized");
+		os_log_error(admob_log, "AdmobPlugin already initialized");
 		return FAILED;
 	}
 
@@ -179,7 +179,7 @@ Error AdmobPlugin::set_request_configuration(Dictionary configData) {
 	os_log_debug(admob_log, "AdmobPlugin set_request_configuration");
 
 	if (initialized == false) {
-		os_log_debug(admob_log, "AdmobPlugin has not been initialized");
+		os_log_error(admob_log, "AdmobPlugin has not been initialized");
 		return FAILED;
 	}
 	
@@ -344,7 +344,7 @@ Error AdmobPlugin::load_interstitial_ad(Dictionary adData) {
 	os_log_debug(admob_log, "AdmobPlugin load_interstitial_ad");
 
 	if (initialized == false) {
-		os_log_debug(admob_log, "AdmobPlugin has not been initialized");
+		os_log_error(admob_log, "AdmobPlugin has not been initialized");
 		return FAILED;
 	}
 

@@ -24,7 +24,7 @@ void admob_plugin_init() {
 
 void admob_plugin_deinit() {
 	os_log_debug(admob_log, "deinit plugin");
-	
+	os_release(admob_log);
 	if (plugin) {
 		memdelete(plugin);
 	}
