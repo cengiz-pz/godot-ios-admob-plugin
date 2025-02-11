@@ -146,13 +146,18 @@
 + (UMPRequestParameters *) godotDictionaryToUMPRequestParameters:(Dictionary) godotDictionary {
 	UMPRequestParameters *parameters = [[UMPRequestParameters alloc] init];
 
-	bool tagForUnderAgeOfConsent = godotDictionary["tag_for_under_age_of_consent"];
-	parameters.tagForUnderAgeOfConsent = tagForUnderAgeOfConsent;
+	if (godotDictionary.has("tag_for_under_age_of_consent")) {
+		bool tagForUnderAgeOfConsent = (bool) godotDictionary["tag_for_under_age_of_consent"];
+		parameters.tagForUnderAgeOfConsent = tagForUnderAgeOfConsent;
+	}
 
-	Dictionary consentDebugSettingsDictionary = godotDictionary["consent_debug_settings"];
+	bool debugMode = false;
+	if (godotDictionary.has("is_real")) {
+		debugMode = !(bool) godotDictionary["is_real"];
+	}
 
-	if (!consentDebugSettingsDictionary.is_empty()) {
-		parameters.debugSettings = [GAPConverter godotDictionaryToUMPDebugSettings:consentDebugSettingsDictionary];
+	if (debugMode) {
+		parameters.debugSettings = [GAPConverter godotDictionaryToUMPDebugSettings:godotDictionary];
 	}
 	
 	return parameters;
