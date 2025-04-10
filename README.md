@@ -1,3 +1,6 @@
+<p align="center">
+  <img width="256" height="256" src="demo/admob.png">
+</p>
 
 ---
 # ![](addon/icon.png?raw=true) iOS Admob Plugin
