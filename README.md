@@ -209,7 +209,17 @@ ___
 - Run `./script/build.sh -A <godot version>` initially to run a full build
 - Run `./script/build.sh -cgA <godot version>` to clean, redownload Godot, and rebuild
 - Run `./script/build.sh -ca` to clean and build without redownloading Godot
+- Run `./script/build.sh -cb -z4.0` to clean and build plugin without redownloading Godot and package in a zip archive as version 4.0
 - Run `./script/build.sh -h` for more information on the build script
+
+<br/>
+
+___
+
+## ![](addon/icon.png?raw=true) Install Script
+
+- Run `./script/install.sh -t <target directory> -z <path to zip file>` install plugin to a Godot project.
+- Example `./script/install.sh -t demo -z bin/release/AdmobPlugin-v4.0.zip` to install to demo app.
 
 <br/>
 
