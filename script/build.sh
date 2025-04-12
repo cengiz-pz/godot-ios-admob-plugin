@@ -6,7 +6,7 @@ plugin_name="AdmobPlugin"
 PLUGIN_VERSION=''
 PLUGIN_NODE_TYPE="Admob"
 PLUGIN_DEPENDENCIES=""
-supported_godot_versions=("4.2" "4.3" "4.4")
+supported_godot_versions=("4.2" "4.3" "4.4.1" "4.5")
 BUILD_TIMEOUT=40	# increase this value using -t option if device is not able to generate all headers before godot build is killed
 
 DEST_DIRECTORY="./bin/release"

@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://daro5x6n3pd26"]
 
-[ext_resource type="Script" path="res://Main.gd" id="1_wt50o"]
-[ext_resource type="Script" path="res://addons/AdmobPlugin/Admob.gd" id="2_4x6et"]
+[ext_resource type="Script" uid="uid://rjhumna7s7wu" path="res://Main.gd" id="1_wt50o"]
+[ext_resource type="Script" uid="uid://dhq4qe3wt2mhm" path="res://addons/AdmobPlugin/Admob.gd" id="2_4x6et"]
 [ext_resource type="Texture2D" uid="uid://kkkc3onubj3w" path="res://admob.png" id="2_qti4s"]
 
 [node name="Main" type="Node"]
@@ -144,6 +144,7 @@ size_flags_horizontal = 3
 selected = 1
 item_count = 3
 popup/item_0/text = "DISABLED"
+popup/item_0/id = 0
 popup/item_1/text = "EEA"
 popup/item_1/id = 1
 popup/item_2/text = "NOT EEA"
