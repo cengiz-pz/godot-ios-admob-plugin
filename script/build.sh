@@ -2,11 +2,12 @@
 set -e
 trap "sleep 1; echo" EXIT
 
-plugin_name="AdmobPlugin"
-PLUGIN_VERSION=''
 PLUGIN_NODE_TYPE="Admob"
+PLUGIN_NAME="${PLUGIN_NODE_TYPE}Plugin"
+PLUGIN_VERSION=''
 PLUGIN_DEPENDENCIES=""
-supported_godot_versions=("4.2" "4.3" "4.4.1" "4.5")
+TARGET_OS="ios"
+SUPPORTED_GODOT_VERSIONS=("4.2" "4.3" "4.4.1" "4.5")
 BUILD_TIMEOUT=40	# increase this value using -t option if device is not able to generate all headers before godot build is killed
 
 DEST_DIRECTORY="./bin/release"
@@ -187,17 +188,17 @@ function generate_static_library()
 	TARGET_TYPE="$1"
 	lib_directory="$2"
 
-	display_status "generating static libraries for $plugin_name with target type $TARGET_TYPE..."
+	display_status "generating static libraries for $PLUGIN_NAME with target type $TARGET_TYPE..."
 
 	# ARM64 Device
-	scons target=$TARGET_TYPE arch=arm64 target_name=$plugin_name version=$GODOT_VERSION
+	scons target=$TARGET_TYPE arch=arm64 target_name=$PLUGIN_NAME version=$GODOT_VERSION
 	# x86_64 Simulator
-	scons target=$TARGET_TYPE arch=x86_64 simulator=yes target_name=$plugin_name version=$GODOT_VERSION
+	scons target=$TARGET_TYPE arch=x86_64 simulator=yes target_name=$PLUGIN_NAME version=$GODOT_VERSION
 
 	# Creating fat library for device and simulator
-	lipo -create "$lib_directory/lib$plugin_name.x86_64-simulator.$TARGET_TYPE.a" \
-		"$lib_directory/lib$plugin_name.arm64-ios.$TARGET_TYPE.a" \
-		-output "$lib_directory/$plugin_name.$TARGET_TYPE.a"
+	lipo -create "$lib_directory/lib$PLUGIN_NAME.x86_64-simulator.$TARGET_TYPE.a" \
+		"$lib_directory/lib$PLUGIN_NAME.arm64-ios.$TARGET_TYPE.a" \
+		-output "$lib_directory/$PLUGIN_NAME.$TARGET_TYPE.a"
 }
 
 
@@ -231,10 +232,10 @@ function build_plugin()
 	# Compile library
 	generate_static_library release $LIB_DIRECTORY
 	generate_static_library release_debug $LIB_DIRECTORY
-	mv $LIB_DIRECTORY/$plugin_name.release_debug.a $LIB_DIRECTORY/$plugin_name.debug.a
+	mv $LIB_DIRECTORY/$PLUGIN_NAME.release_debug.a $LIB_DIRECTORY/$PLUGIN_NAME.debug.a
 
 	# Move library
-	cp $LIB_DIRECTORY/$plugin_name.{release,debug}.a "$DEST_DIRECTORY"
+	cp $LIB_DIRECTORY/$PLUGIN_NAME.{release,debug}.a "$DEST_DIRECTORY"
 
 	cp "$CONFIG_DIRECTORY"/*.gdip "$DEST_DIRECTORY"
 }
@@ -257,7 +258,7 @@ function create_zip_archive()
 		godot_version_suffix="v$PLUGIN_VERSION"
 	fi
 
-	file_name="$plugin_name-$godot_version_suffix.zip"
+	file_name="$PLUGIN_NAME-$godot_version_suffix.zip"
 
 	if [[ -e "./bin/release/$file_name" ]]
 	then
@@ -276,12 +277,13 @@ function create_zip_archive()
 
 	if [[ -d "$addon_directory" ]]
 	then
-		mkdir -p $tmp_directory/addons/$plugin_name
-		cp -r $addon_directory/* $tmp_directory/addons/$plugin_name
-		sed -i '' -e "s/@pluginName@/$plugin_name/g" $tmp_directory/addons/$plugin_name/*.{gd,cfg}
-		sed -i '' -e "s/@pluginVersion@/$PLUGIN_VERSION/g" $tmp_directory/addons/$plugin_name/*.{gd,cfg}
-		sed -i '' -e "s/@pluginNodeName@/$PLUGIN_NODE_TYPE/g" $tmp_directory/addons/$plugin_name/*.{gd,cfg}
-		sed -i '' -e "s/@pluginDependencies@/$PLUGIN_DEPENDENCIES/g" $tmp_directory/addons/$plugin_name/*.{gd,cfg}
+		mkdir -p $tmp_directory/addons/$PLUGIN_NAME
+		cp -r $addon_directory/* $tmp_directory/addons/$PLUGIN_NAME
+		sed -i '' -e "s/@pluginName@/$PLUGIN_NAME/g" $tmp_directory/addons/$PLUGIN_NAME/*.{gd,cfg}
+		sed -i '' -e "s/@pluginVersion@/$PLUGIN_VERSION/g" $tmp_directory/addons/$PLUGIN_NAME/*.{gd,cfg}
+		sed -i '' -e "s/@pluginNodeName@/$PLUGIN_NODE_TYPE/g" $tmp_directory/addons/$PLUGIN_NAME/*.{gd,cfg}
+		sed -i '' -e "s/@pluginDependencies@/$PLUGIN_DEPENDENCIES/g" $tmp_directory/addons/$PLUGIN_NAME/*.{gd,cfg}
+		sed -i '' -e "s/@targetOs@/$TARGET_OS/g" $tmp_directory/addons/$PLUGIN_NAME/*.{gd,cfg}
 	fi
 
 	mkdir -p $tmp_directory/ios/framework
@@ -289,7 +291,7 @@ function create_zip_archive()
 
 	mkdir -p $tmp_directory/ios/plugins
 	cp $CONFIG_DIRECTORY/*.gdip $tmp_directory/ios/plugins
-	cp $LIB_DIRECTORY/$plugin_name.{release,debug}.a $tmp_directory/ios/plugins
+	cp $LIB_DIRECTORY/$PLUGIN_NAME.{release,debug}.a $tmp_directory/ios/plugins
 
 	mkdir -p $DEST_DIRECTORY
 
@@ -369,16 +371,16 @@ while getopts "aA:bcgG:hHipPt:z:" option; do
 	esac
 done
 
-if ! [[ " ${supported_godot_versions[*]} " =~ [[:space:]]${GODOT_VERSION}[[:space:]] ]]
+if ! [[ " ${SUPPORTED_GODOT_VERSIONS[*]} " =~ [[:space:]]${GODOT_VERSION}[[:space:]] ]]
 then
 	if [[ "$do_download_godot" == false ]]
 	then
 		display_warning "Warning: Godot version not specified. Will look for existing download."
 	elif [[ "$ignore_unsupported_godot_version" == true ]]
 	then
-		display_warning "Warning: Godot version '$GODOT_VERSION' is not supported. Supported versions are [${supported_godot_versions[*]}]."
+		display_warning "Warning: Godot version '$GODOT_VERSION' is not supported. Supported versions are [${SUPPORTED_GODOT_VERSIONS[*]}]."
 	else
-		display_error "Error: Godot version '$GODOT_VERSION' is not supported. Supported versions are [${supported_godot_versions[*]}]."
+		display_error "Error: Godot version '$GODOT_VERSION' is not supported. Supported versions are [${SUPPORTED_GODOT_VERSIONS[*]}]."
 		exit 1
 	fi
 fi
