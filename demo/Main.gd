@@ -42,10 +42,14 @@ func _ready() -> void:
 
 func _on_admob_initialization_completed(status_data: InitializationStatus) -> void:
 	_process_consent_status(admob.get_consent_status())
-	admob.load_banner_ad()
-	admob.load_interstitial_ad()
-	admob.load_rewarded_ad()
-	admob.load_rewarded_interstitial_ad()
+
+	if admob.att_enabled:
+		admob.request_tracking_authorization()
+	else:
+		admob.load_banner_ad()
+		admob.load_interstitial_ad()
+		admob.load_rewarded_ad()
+		admob.load_rewarded_interstitial_ad()
 
 
 func _on_size_button_pressed() -> void:
@@ -229,10 +233,22 @@ func _on_admob_consent_form_dismissed(a_error_data: FormError) -> void:
 
 
 func _on_update_consent_info_button_pressed() -> void:
-	print("selected consent geography: %d" % _geography_option_button.selected)
+	_print_to_screen("selected consent geography: %d" % _geography_option_button.selected)
 	admob.update_consent_info(ConsentRequestParameters.new()
 		.set_debug_geography(ConsentRequestParameters.DebugGeography.values()[_geography_option_button.selected])
 		.add_test_device_hashed_id(OS.get_unique_id()))
+
+
+func _on_admob_tracking_authorization_granted() -> void:
+	_print_to_screen("Tracking authorization was granted.")
+	admob.load_banner_ad()
+	admob.load_interstitial_ad()
+	admob.load_rewarded_ad()
+	admob.load_rewarded_interstitial_ad()
+
+
+func _on_admob_tracking_authorization_denied() -> void:
+	_print_to_screen("Tracking authorization was denied.")
 
 
 func _print_to_screen(a_message: String, a_is_error: bool = false) -> void:
