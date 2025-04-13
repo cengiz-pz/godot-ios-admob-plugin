@@ -560,11 +560,15 @@ void AdmobPlugin::request_tracking_authorization() {
 		[ATTrackingManager requestTrackingAuthorizationWithCompletionHandler:^(ATTrackingManagerAuthorizationStatus status) {
 			if (status == ATTrackingManagerAuthorizationStatusAuthorized) {
 				os_log_debug(admob_log, "Tracking has been authorized for %@", [[ASIdentifierManager sharedManager].advertisingIdentifier UUIDString]);
-				emit_signal(TRACKING_AUTHORIZATION_GRANTED);
+				dispatch_async(dispatch_get_main_queue(), ^{
+					instance->emit_signal(TRACKING_AUTHORIZATION_GRANTED);
+				});
 			} else {
 				os_log_debug(admob_log, "Tracking has been denied for %@ with status '%@'", [[ASIdentifierManager sharedManager].advertisingIdentifier UUIDString],
 					[GAPConverter convertTrackingStatusToString: status]);
-				emit_signal(TRACKING_AUTHORIZATION_DENIED);
+				dispatch_async(dispatch_get_main_queue(), ^{
+					instance->emit_signal(TRACKING_AUTHORIZATION_DENIED);
+				});
 			}
 		}];
 	}
