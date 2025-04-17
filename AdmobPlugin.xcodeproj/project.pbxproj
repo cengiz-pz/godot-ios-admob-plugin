@@ -301,6 +301,7 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
 					"$(SRCROOT)/godot",
 					"$(SRCROOT)/godot/main",
 					"$(SRCROOT)/godot/core",
@@ -315,6 +316,7 @@
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"$(TOOLCHAIN_DIR)/usr/lib/swift",
 					"$(PROJECT_DIR)/godot/bin",
 				);
 				ONLY_ACTIVE_ARCH = YES;
@@ -344,6 +346,7 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
 					"$(SRCROOT)/godot",
 					"$(SRCROOT)/godot/main",
 					"$(SRCROOT)/godot/core",
@@ -358,6 +361,7 @@
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"$(TOOLCHAIN_DIR)/usr/lib/swift",
 					"$(PROJECT_DIR)/godot/bin",
 				);
 				ONLY_ACTIVE_ARCH = YES;
