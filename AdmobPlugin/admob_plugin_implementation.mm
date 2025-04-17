@@ -163,7 +163,9 @@ Error AdmobPlugin::initialize() {
 	rewardedAds = [NSMutableDictionary dictionaryWithCapacity:10];
 	rewardedAdSequence = 0;
 	
-	GADMobileAds.sharedInstance.requestConfiguration.testDeviceIdentifiers = @[ GADSimulatorID ];
+	// GADSimulatorID was removed in version 12 as 'Simulators are already in test mode by default.'
+	// GADMobileAds.sharedInstance.requestConfiguration.testDeviceIdentifiers = @[ GADSimulatorID ];
+
 	[[GADMobileAds sharedInstance] startWithCompletionHandler:^(GADInitializationStatus *_Nonnull status)
 	{
 		Dictionary dictionary = [GAPConverter initializationStatusToGodotDictionary:status];

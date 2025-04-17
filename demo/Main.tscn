@@ -183,10 +183,6 @@ debug_banner_id = "ca-app-pub-3940256099942544/6300978111"
 debug_interstitial_id = "ca-app-pub-3940256099942544/1033173712"
 debug_rewarded_id = "ca-app-pub-3940256099942544/5224354917"
 debug_rewarded_interstitial_id = "ca-app-pub-3940256099942544/5354046379"
-remove_banner_ads_after_scene = null
-remove_interstitial_ads_after_scene = null
-remove_rewarded_ads_after_scene = null
-remove_rewarded_interstitial_ads_after_scene = null
 
 [connection signal="pressed" from="CanvasLayer/CenterContainer/VBoxContainer/VBoxContainer/TabContainer/Banner/SizeButtonHBoxContainer/SizeButton" to="." method="_on_size_button_pressed"]
 [connection signal="pressed" from="CanvasLayer/CenterContainer/VBoxContainer/VBoxContainer/TabContainer/Banner/SizeButtonHBoxContainer/PixelSizeButton" to="." method="_on_pixel_size_button_pressed"]
